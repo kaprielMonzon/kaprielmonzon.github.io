@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web insegura de un sanatorio</title>
+  <style>
+    :root {
+      --brick-fire: #B22222;
+      --fondo-negro: #121212;
+      --texto-principal: #e0dcdc;
+      --texto-secundario: #b5a6a6;
+      --gris-oscuro: #2a2a2a;
+    }
+
+    body {
+      background-color: var(--fondo-negro);
+      color: var(--texto-principal);
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 3rem 1rem;
+      line-height: 1.9;
+      font-size: 1.18rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--brick-fire);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin-bottom: 1rem;
+      white-space: normal;
+      overflow-wrap: break-word;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-top: 0;
+      border-bottom: 3px solid var(--brick-fire);
+      padding-bottom: 0.3rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-top: 3rem;
+      border-bottom: 1.5px solid var(--brick-fire);
+      padding-bottom: 0.25rem;
+    }
+
+    h3 {
+      font-size: 1.6rem;
+      margin-top: 2.5rem;
+      border-bottom: 1.5px solid var(--brick-fire);
+      padding-bottom: 0.2rem;
+    }
+
+    h4 {
+      font-size: 1.4rem;
+      margin-top: 2rem;
+      border-bottom: 1px solid var(--brick-fire);
+      padding-bottom: 0.2rem;
+    }
+
+    p {
+      margin-bottom: 2rem;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 15px var(--brick-fire);
+      margin: 2rem auto;
+      display: block;
+      height: auto;
+    }
+
+    blockquote {
+      border-left: 5px solid var(--brick-fire);
+      padding-left: 1rem;
+      color: var(--texto-secundario);
+      font-style: italic;
+      margin: 2rem 0;
+      background-color: var(--gris-oscuro);
+      border-radius: 8px;
+    }
+
+    a {
+      color: var(--brick-fire);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--brick-fire);
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: #db5858;
+      border-bottom: 1px solid #db5858;
+    }
+
+    header, footer {
+      text-align: center;
+      color: var(--brick-fire);
+      margin-bottom: 3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    footer {
+      margin-top: 5rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 2rem 1rem;
+        font-size: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.3rem;
+      }
+
+      h4 {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Web insegura de un sanatorio</h1>
+    <p>Por Kapriel Monzon | 17 de junio de 2025</p>
+  </header>
+
+  <article>
+
+    <p>
+      Hoy en día usamos internet para todo. Podemos facilitar muchos trámites gracias a él: transacciones, correos, mensajes y, lo que nos trae hoy, solicitar un turno en un sanatorio de forma online.
+    </p>
+
+    <img src="images/img.png" alt="Imagen 1" />
+
+    <blockquote>
+      “Muchos pasamos por esta situación: entramos a un sitio y nos da dos espacios para poner nuestros datos como DNI o contraseña, pero poca gente se pregunta qué tan seguro es poner estos datos tan personales.”
+    </blockquote>
+
+    <h2>¿Qué ocurre por detrás al poner estos datos?</h2>
+
+    <p>
+      Cuando ingresás datos sensibles como tu DNI y contraseña en una página web, el navegador envía esa información a través de un protocolo. Si el sitio usa HTTP, tus datos viajan en texto plano y pueden ser interceptados. En cambio, si usa HTTPS (la versión segura), toda la información es cifrada usando SSL/TLS, lo que impide que terceros puedan leerla.
+    </p>
+
+    <img src="images/img2.jpg" alt="Comparación de sitios seguros e inseguros" />
+
+    <blockquote>
+      “En esta imagen se ejemplifica cuando accedemos a un sitio seguro y uno que no. Hoy en día los navegadores nos alertan de esto y mucha gente no toma conciencia de lo que significa una falla como esta.”
+    </blockquote>
+
+    <h2>Demostración</h2>
+
+    <p>
+      En el mundo de la ciberseguridad se utilizan herramientas para identificar estos descuidos. Para este experimento utilicé Wireshark, una herramienta muy útil para estos casos. Puede capturar todo lo que pasa por una conexión en tiempo real: páginas visitadas, datos enviados y destinos.
+    </p>
+
+    <img src="images/img3.png" alt="Captura de Wireshark mostrando tráfico" />
+
+    <blockquote>
+      "En esta imagen pongo las credenciales que pide la página del sanatorio: DNI y contraseña."
+    </blockquote>
+
+    <h3>Captura de los datos</h3>
+
+    <p>
+      Antes de iniciar sesión puse en marcha Wireshark para que empezara a capturar el tráfico. Luego ingresé las credenciales y detuve la captura. En la siguiente imagen, filtré por protocolo HTTP, lo que me permitió ver los datos que envié al hacer clic en “iniciar sesión”. Estos datos viajaban en formato JSON (una estructura de texto usada frecuentemente en la web).
+    </p>
+
+    <img src="images/img4.png" alt="Captura de JSON con credenciales" />
+
+    <h4>¿Qué ocurre con esto?</h4>
+
+    <p>
+      El problema es que desde otro dispositivo conectado a la misma red se puede capturar este tráfico. Un atacante podría interceptar tus datos y robar tu información. No solo podría pasar con una página médica, sino con foros, redes sociales, bancos u otros servicios. La solución es simple: siempre verificar si el sitio es seguro y si el navegador advierte sobre fallos de seguridad.
+    </p>
+
+  </article>
+
+  <footer>
+    <p style="font-size: 0.9rem; color: var(--texto-secundario); text-align: center; margin-top: 4rem;">
+      Fuentes:
+      <a href="https://developer.mozilla.org/es/docs/Web/HTTP" target="_blank" rel="noopener noreferrer">
+        Mozilla Developer Network (MDN)
+      </a> ---
+            <a href="https://aws.amazon.com/compare/the-difference-between-https-and-http/" target="_blank" rel="noopener noreferrer">
+        AWS - Diferencias entre HTTPS y HTTP
+      </a>
+    </p>
+  </footer>
+
+</body>
+</html>
