@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Machete de Comandos Linux</title>
+  <title>Machete de Comandos</title>
   <style>
     :root {
       --brick-fire: #B22222;
@@ -183,6 +183,12 @@ ssh usuario@servidor -p puerto “comando” [inicia sesión y ejecuta un comand
 ssh-keygen [para generar una clave]
 
 ssh-keygen -lf [sirve para mostrar la huella digital de una clave SSH pública]
+
+ssh-keygen -t ed25519 -C "tu_email@example.com" [para generar una clave ssh con un mail]
+
+cat ~/.ssh/clave.pub [para leer la clave ssh]
+
+ssh -T git@github.com [probar conexion en git con ssh para autenticar]
 
 systemctl enable ssh [iniciar ssh]
 
