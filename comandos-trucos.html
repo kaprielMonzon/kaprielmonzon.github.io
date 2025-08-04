@@ -64,33 +64,41 @@
 <body>
     <h1>Machete Comandos Basicos</h1>
     <code>
-nc -zv ip puerto [verificar si un puerto está abierto en un host]
+find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegios elevados]
 
-nc ip puerto {contraseña} [conectar servidor a un puerto en específico]
+find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
 
-nc localhost puerto {contraseña} [conectar el servidor en el que estás a un puerto en específico]
+nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
 
-nc –lnvp puerto [creará un servidor de escucha, mostrará información sobre las conexiones y no intentará resolver los nombres de host de quienes se conecten. Estará esperando que alguien le envíe datos a ese puerto]
+nc ip (puerto) {contraseña} [conectar servidor a un puerto en específico]
 
-ncat --ssl servidor puerto [sirve para crear una conexión más segura y con cifrado]
+nc localhost (puerto) {contraseña} [conectar el servidor en el que estás a un puerto en específico]
 
-ncat servidor puerto [sirve para crear conexiones de forma mucho más segura]
+nc –lnvp (puerto) [creará un servidor de escucha, mostrará información sobre las conexiones y no intentará resolver los nombres de host de quienes se conecten. Estará esperando que alguien le envíe datos a ese puerto]
 
-nmap -p numpuerto-numpuerto ip o página [para escanear solo entre un rango de puertos de un número a otro]
+ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
 
-nmap -p puerto ip [es una herramienta que escanea redes para encontrar hosts, puertos abiertos y servicios activos]
+ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
 
-nmap página o ip [para ver qué puertos están abiertos en una máquina remota]
+nmap -p (numpuerto-numpuerto) (ip o página) [para escanear solo entre un rango de puertos de un número a otro]
+
+nmap -p (puerto) (ip) [es una herramienta que escanea redes para encontrar hosts, puertos abiertos y servicios activos]
+
+nmap (página) o (ip) [para ver qué puertos están abiertos en una máquina remota]
+
+nmap -sVC (ip) [es una forma rápida de obtener información detallada sobre los servicios en un host incluidos detalles de versiones y posibles vulnerabilidades]
 
 ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
 
 sudo ed [dentro de ed, al usar el comando !/bin/sh, ejecutamos una shell con permisos de root, lo que nos da control total sobre el sistema. Esto se aprovecha en la escalada de privilegios en un CTF para obtener acceso como administrador]
 
+sudo -l [muestra qué comandos puedes ejecutar con privilegios de superusuario]
+
+sudo bash [permite ejecutar una bash con privilegios de root]
+
 #!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
 
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
-
-sudo ed [dentro de ed, al usar el comando !/bin/sh, ejecutamos una shell con permisos de root, lo que nos da control total sobre el sistema. Esto se aprovecha en la escalada de privilegios en un CTF para obtener acceso como administrador]
 
 ip a [linux] / ipconfig [windows] [averiguar ip de nuestro dispositivo]
 
@@ -135,6 +143,8 @@ python3 -m http.server (puerto) [Levanta un servidor web simple en un puerto par
 gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un programa en C que aprovecha una vulnerabilidad para crear un usuario con permisos de administrador]
 
 rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizando el usuario root]
+
+searchsploit (nombre del exploit) [busca posibles exploits]
 
 sudo msfdb init && msfconsole [inicia metasploit y su consola para pruebas de penetración que permite identificar, explotar y validar vulnerabilidades]
 
