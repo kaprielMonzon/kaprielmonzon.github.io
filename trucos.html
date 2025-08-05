@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Web insegura de un sanatorio</title>
+  <title>Vulnerabilidades</title>
   <style>
     :root {
       --brick-fire: #B22222;
@@ -140,7 +140,7 @@
 <body>
 
   <header>
-    <h1>Trucos</h1>
+    <h1>Vulnerabilidades</h1>
   </header>
 
   <article>
@@ -148,8 +148,22 @@
     <h2>Shell reversa con php en wp-admin</h2>
 
     <p>
-        Al iniciar sesion en wp-admin, si hay acceso a la seccion Appearance y hay codigo php, se puede pegar codigo de un php para conseguir una shell reversa
+        Al iniciar sesion en wp-admin, si hay acceso a la seccion Appearance y hay codigo php, se puede pegar codigo de un php para conseguir una shell reversa.
     </p>
-    </article>
+
+     <h2>Nombre personalizado de un dominio en una ip</h2>
+
+    <p>
+      Al entrar a una ip (ej: http://10.2.168.99/), y aparece con un nombre de dominio (ej: http://vtcsec) y no permite acceder, se soluciona de la siguiente manera.
+      Ejecute "sudo nano /etc/hosts" para acceder al dominio, una vez dentro coloque la ip y el nombre que aparece "10.2.168.99 vtcsec", guardalo y ya se puede acceder al sitio. 
+    </p>
+
+    <h2>
+      Directorios de interes
+    </h2>
+    <p>
+      /var/www/html [se aloja un servicio web]
+    </p>
+  </article>
 
   

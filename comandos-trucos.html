@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comandos Basicos</title>
+  <title>Comandos Pentesting</title>
   <style>
     :root {
       --brick-fire: #B22222;
@@ -62,11 +62,13 @@
   </style>
 </head>
 <body>
-    <h1>Machete Comandos Basicos</h1>
+    <h1>Comandos Pentesting</h1>
     <code>
 find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegios elevados]
 
 find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
+
+ltrace ./archivo [muestra en tiempo real las funciones de biblioteca que un programa llama mientras se ejecuta]
 
 nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
 
