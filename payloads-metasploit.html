@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/kaprielmonzon.github.io/images/terminal.png" type="image/png">
   <title>Payloads Metasploit</title>
   <style>
     :root {
@@ -72,5 +73,11 @@ exploit/unix/webapp/wp_admin_shell_upload [WordPress Admin Shell Upload]
 exploit/unix/ftp/proftpd_133c_backdoor [ProFTPD-1.3.3c Backdoor Command Execution]
 
 auxiliary/admin/http/wp_google_maps_sqli [WordPress Google Maps Plugin SQL Injection]
+
+exploit/multi/handler [Generic Payload Handler] {
+
+  payload/php/meterpreter_reverse_tcp
+
+}
 
     </code>
