@@ -121,6 +121,8 @@ wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en
 
 gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [El comando fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
 
+fuzz 
+
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
 curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]

