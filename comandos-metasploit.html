@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comandos</title>
+  <title>Comandos y Metasploit</title>
   <link rel="icon" href="/images/terminal.png" type="image/png">
   <style>
     :root {
@@ -402,4 +402,21 @@ git push origin --tags [Sube todos tus tags locales a tu repositorio remoto]
 & [Sirve para ejecutar comandos en segundo plano que son de larga duración como nc para conexiones largas, find para buscar en un directorio grande, cp para copiar archivos grandes]
 
 jobs [ver procesos en segundo plano]
+    </code>
+
+  <h1>Payloads Metasploit</h1>
+       
+    <code>
+exploit/unix/webapp/wp_admin_shell_upload [WordPress Admin Shell Upload]
+
+exploit/unix/ftp/proftpd_133c_backdoor [ProFTPD-1.3.3c Backdoor Command Execution]
+
+auxiliary/admin/http/wp_google_maps_sqli [WordPress Google Maps Plugin SQL Injection]
+
+exploit/multi/handler [Generic Payload Handler] {
+
+  payload/php/meterpreter_reverse_tcp
+
+}
+
     </code>
