@@ -97,6 +97,8 @@ sudo ed [dentro de ed, al usar el comando !/bin/sh, ejecutamos una shell con per
 
 sudo -l [muestra qué comandos puedes ejecutar con privilegios de superusuario]
 
+sudo -u (usuario) [permite ejecutar un comando con los permisos de un usuario diferente, lo cual es útil cuando necesitas ejecutar tareas con los privilegios de otro usuario sin dar acceso completo como root]
+
 sudo bash [permite ejecutar una bash con privilegios de root]
 
 #!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
@@ -119,9 +121,9 @@ wpscan --url (ip) [es para identificar plugin o cosas vulnerables en un sitio Wo
 
 wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en un sitio wordpress en busca de posibles vectores de ataque como fuerza bruta]
 
-gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [El comando fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
+gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [Fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
 
-fuzz 
+ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,.php [Fuerza rutas ocultas usando -w para wordlists, -u para la direccion ip, -c para dar claridad, -ic para ignorar respuestas iguales, -fc para ignorar codigos de estado y -e para encontrar extensiones]
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
