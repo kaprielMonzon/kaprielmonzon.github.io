@@ -9,7 +9,7 @@
     :root {
       --brick-fire: #B22222;
       --fondo-negro: #000000;
-      --texto-principal: #e0dcdc;
+      --texto-principal: #ffffff;
       --texto-secundario: #b5a6a6;
       --gris-oscuro: #2a2a2a;
     }
@@ -133,11 +133,15 @@ sqlmap -r (archivo.sql) -D (USUARIOS) --dump-all [extrae y muestra todo el conte
 
 sqlmap -u (usuario) -h (ip) -p [El comando usa sqlmap para probar si un parámetro de la URL (especificado con -p) es vulnerable a inyección SQL en un sitio web (indicado con -u)]
 
-show databases; [en sqlmap esto lista todas las bases de datos accesibles para el usuario]
+mysql -u (usuario) -h (ip) -p --skip-ssl (sirve para conectarse a una base de datos mysql a traves de un usuario, ip y contraseña intentando evadir la verificacion ssl)
 
-use (BaseDeDatos); [en sqlmap selecciona una base de datos]
+show databases; [en mysql esto lista todas las bases de datos accesibles para el usuario]
 
-select * from (tabla) [en sqlmap esto lista toda la tabla de una base de datos]
+show tables; [en mysql revela las tablas de informacion]
+
+use (BaseDeDatos); [en mysql selecciona una base de datos]
+
+select * from (tabla); [en mysql esto lista toda la tabla de una base de datos]
 
 curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
 
