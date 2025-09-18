@@ -79,6 +79,8 @@ nc localhost (puerto) {contraseña} [conectar el servidor en el que estás a un 
 
 nc –lnvp (puerto) [creará un servidor de escucha, mostrará información sobre las conexiones y no intentará resolver los nombres de host de quienes se conecten. Estará esperando que alguien le envíe datos a ese puerto]
 
+ss -tnl [esto muestra la informacion de las conexiones activas en el servidor]
+
 ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
 
 ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]

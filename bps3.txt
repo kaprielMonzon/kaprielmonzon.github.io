@@ -1,0 +1,10 @@
+GET /date?format=2FKaCgCDhrKDtPk3bLhEKFzdkb681KiAmhhBzVoyVfzgkyBLM3dA97yHrZXeEwYs1K8fb8ssVzmwxHaedKHj2mtcp8DzVAvamFmFjdeyXrXMFF HTTP/1.1
+Host: chronos.local:8000
+User-Agent: Chronos
+Accept: */*
+Accept-Language: es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate, br
+Origin: http://chronos.local
+Connection: keep-alive
+Referer: http://chronos.local/
+If-None-Match: W/"30-7qZrB2LLMyJdyeEutmbT/B0yL2w"
