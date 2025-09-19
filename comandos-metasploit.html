@@ -4,67 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Comandos y Metasploit</title>
-  <link rel="icon" href="/images/terminal.png" type="image/png">
-  <style>
-    :root {
-      --brick-fire: #B22222;
-      --fondo-negro: #000000;
-      --texto-principal: #ffffff;
-      --texto-secundario: #b5a6a6;
-      --gris-oscuro: #2a2a2a;
-    }
-
-    body {
-      background-color: var(--fondo-negro);
-      color: var(--texto-principal);
-      font-family: 'Georgia', serif;
-      margin: 0;
-      padding: 3rem 1rem;
-      line-height: 1.9;
-      font-size: 1.05rem;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      white-space: pre-wrap;
-    }
-
-    h1 {
-      color: var(--brick-fire);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      border-bottom: 3px solid var(--brick-fire);
-      padding-bottom: 0.3rem;
-    }
-
-    h2 {
-      color: var(--brick-fire);
-      font-size: 1.5rem;
-      margin-top: 2rem;
-      border-bottom: 1px dashed var(--brick-fire);
-    }
-
-    code {
-      background-color: #000000;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-family: monospace;
-      display: block;
-      margin: 0.3rem 0;
-      white-space: pre-wrap;
-    }
-
-    footer {
-      text-align: center;
-      color: var(--brick-fire);
-      margin-top: 4rem;
-      font-size: 0.9rem;
-    }
-  </style>
+  <link rel="icon" href="images/terminal.png" type="image/png">
+  <link rel="stylesheet" href="css/comandos-metasploit.css">
 </head>
 <body>
     <h1>Comandos</h1>
-    <code>
+   <pre> <code>
 find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegios elevados]
 
 find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
@@ -101,6 +46,10 @@ sudo bash [permite ejecutar una bash con privilegios de root]
 
 #!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
 
+binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados como archivos comprimidos o imágenes y los extrae automáticamente a una carpeta]
+
+strings (archivo) [extrae las cadenas de texto de un archivo]
+
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
 
 ip a [linux] / ipconfig [windows] [averiguar ip de nuestro dispositivo]
@@ -118,6 +67,8 @@ whatweb (ip) [sirve para identificar tecnologías y servicios usados por un siti
 wpscan --url (ip) [es para identificar plugin o cosas vulnerables en un sitio WordPress]
 
 wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en un sitio wordpress en busca de posibles vectores de ataque como fuerza bruta]
+
+wpscan --url (ip) -e u --ignore-main-redirect --force [obtiene usuarios de WordPress sin detenerse por redirecciones ni errores]
 
 gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [Fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
 
@@ -299,6 +250,8 @@ ping página o ip [se usa para verificar la conectividad de red entre tu máquin
 
 ssh usuario@servidor -p puerto [iniciar sesión]
 
+sftp usuario@servidor [SFTP es un subsistema dentro del servicio SSH, cuando configuras SSH en un servidor, generalmente por defecto permite la transferencia segura de archivos]
+
 ssh -i /ruta/a/tu/clave_privada user@hostname [para conectarte a un servidor remoto usando tu clave privada SSH]
 
 ssh usuario@servidor -p puerto “comando” [inicia sesión y ejecuta un comando sin quedarse conectado]
@@ -428,11 +381,11 @@ git push origin --tags [Sube todos tus tags locales a tu repositorio remoto]
 & [Sirve para ejecutar comandos en segundo plano que son de larga duración como nc para conexiones largas, find para buscar en un directorio grande, cp para copiar archivos grandes]
 
 jobs [ver procesos en segundo plano]
-    </code>
+    </code></pre>
 
   <h1>Payloads Metasploit</h1>
        
-    <code>
+   <pre> <code>
 exploit/unix/webapp/wp_admin_shell_upload [WordPress Admin Shell Upload]
 
 exploit/unix/ftp/proftpd_133c_backdoor [ProFTPD-1.3.3c Backdoor Command Execution]
@@ -447,4 +400,4 @@ exploit/multi/handler [Generic Payload Handler] {
 
 scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
 
-    </code>
+    </code></pre>

