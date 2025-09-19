@@ -76,6 +76,8 @@ ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
+dirsearch -u (ip o url) -w (RutaDeWordlist) -e php,html,txt,zip [fuerza rutas ocultas en un sitio web usando una wordlist -u para la ip o url -w para la wordlist y -e para extensiones de archivo]
+
 dirbuster [programa con interfaz grafica que fuerza rutas ocultas en un sitio web usando una wordlist]
 
 wfuzz -u 'http://pagina/archivo.php?FUZZ=/etc/passwd' -w /ruta/wordlist -t 5 [fuerza una posible ruta oculta en donde esta FUZZ, que pueda ejecutar un comando, con -t 5 para no saturar la maquina y preferible usar una wordlist chica]
