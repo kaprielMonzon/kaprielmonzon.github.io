@@ -34,7 +34,7 @@ ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con
 
 ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
 
-sudo nmap -p- -sC -sV -T4 -O -v (ip) -oN (infoDeNmap) [El comando realiza un escaneo completo de todos los puertos TCP de una ip, detectando servicios, versiones, sistema operativo y ejecutando scripts por defecto, guardando el resultado en un archivo de la informacion de todo el escaneo]
+sudo nmap -p- -sC -sV -T4 -Pn -sT -n -O -v (ip) -oN (infoDeNmap) [El comando realiza un escaneo completo de todos los puertos TCP de una ip, detectando servicios, versiones, sistema operativo y ejecutando scripts por defecto, guardando el resultado en un archivo de la informacion de todo el escaneo]
 
 ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
 
