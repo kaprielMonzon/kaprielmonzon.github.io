@@ -22,8 +22,6 @@ ping página o ip [se usa para verificar la conectividad de red entre tu máquin
 dig (dominio.com) @(ip) [hace una consulta DNS al servidor de nombres especificado por ip, preguntando por los registros del dominio]
 
 
-
-
 2. escaneo y enumeracion:
 
 
@@ -40,8 +38,6 @@ wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en
 wpscan --url (ip) -e u --ignore-main-redirect --force [obtiene usuarios de WordPress sin detenerse por redirecciones ni errores]
 
 
-
-
 3. fuzzing y fuerza rutas web:
 
 
@@ -56,8 +52,6 @@ dirsearch -u (ip o url) -w (RutaDeWordlist) -e php,html,txt,zip [fuerza rutas oc
 dirbuster [programa con interfaz grafica que fuerza rutas ocultas en un sitio web usando una wordlist]
 
 wfuzz -u 'http://pagina/archivo.php?FUZZ=/etc/passwd' -w /ruta/wordlist -t 5 [fuerza una posible ruta oculta en donde esta FUZZ, que pueda ejecutar un comando, con -t 5 para no saturar la maquina y preferible usar una wordlist chica]
-
-
 
 
 4. explotacion web e inyeccion:
@@ -86,8 +80,6 @@ use (BaseDeDatos); [en mysql selecciona una base de datos]
 select * from (tabla); [en mysql esto lista toda la tabla de una base de datos]
 
 searchsploit (nombre del exploit) [busca posibles exploits]
-
-
 
 
 5. fuerza bruta, codificacion, y wordlists:
@@ -124,8 +116,6 @@ mp64 (contraseña) >> wordlist [genera varias posibilidades de contraseñas con 
                               ?s =  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 
                               ?a = ?l?u?d?s
                               ?b = 0x00 - 0xff ]
-
-
 
 
 6. conexiones y transferencia de archivos:
@@ -182,8 +172,6 @@ openssl s_client -connect localhost:puerto [para conectarse estando dentro del s
 ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuarios subir y descargar archivos de manera remota entre computadoras a través de una red]
 
 
-
-
 7. compilacion, analisis de archivos y binarios:
 
 gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un programa en C que aprovecha una vulnerabilidad para crear un usuario con permisos de administrador]
@@ -193,8 +181,6 @@ binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados 
 strings (archivo) [extrae las cadenas de texto de un archivo]
 
 stegcracker (archivo de imagen) (RutaDeWordlist) [analiza imágenes y busca posibles mensajes o archivos escondidos dentro de ellas]
-
-
 
 
 8. post explotacion y escalada de privilegios:
@@ -233,8 +219,6 @@ chmod 600 [solo el propietario puede leer y escribir el archivo]
 chmod 777 [abrir permisos para todos los usuarios, leer, escribir y ejecutar]
 
 chmod +x [da permisos para ejecutar un archivo]
-
-
 
 
 9. metasploit y payloads:
@@ -282,8 +266,6 @@ exploit/multi/handler [Generic Payload Handler] {
 scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
 
 exploit/multi/http/builderengine_upload_exec [BuilderEngine 3.5.0 Arbitrary File Upload Vulnerability and execution]
-
-
 
 
 10. otros:
@@ -388,8 +370,6 @@ uniq -u [filtra líneas idénticas y -u elimina las repetidas]
 & [Sirve para ejecutar comandos en segundo plano que son de larga duración como nc para conexiones largas, find para buscar en un directorio grande, cp para copiar archivos grandes]
 
 jobs [ver procesos en segundo plano]
-
-
 
 
 11. comandos de git:
