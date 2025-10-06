@@ -47,6 +47,8 @@ ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
+dirb (ip o url) / -u usuario:contraseña [fuerza rutas con credenciales]
+
 dirsearch -u (ip o url) -w (RutaDeWordlist) -e php,html,txt,zip [fuerza rutas ocultas en un sitio web usando una wordlist -u para la ip o url -w para la wordlist y -e para extensiones de archivo]
 
 dirbuster [programa con interfaz grafica que fuerza rutas ocultas en un sitio web usando una wordlist]
@@ -62,8 +64,6 @@ curl -v -X OPTIONS (ip o url) [realiza una solicitud OPTIONS a un sitio web]
 curl -T archivo (ip/dir/archivo) --http1.0 [sirve para subir un archivo a un servidor web usando el método HTTP PUT bajo la versión HTTP/1.0]
 
 curl -X POST -k http://ip/archivo.php -d "parametro=../../../../../etc/passwd" [lee /etc/passwd con una traversal (../../..) en archivo.php]
-
-
 
 sqlmap -r (archivo.sql) --dbs [ejecuta un ataque de inyección SQL usando una petición HTTP guardada en el archivo archivo.sql para detectar y listar las bases de datos del servidor objetivo]
 
@@ -127,17 +127,11 @@ mp64 (contraseña) >> wordlist [genera varias posibilidades de contraseñas con 
 
 nc -lvnp (puerto) [sirve para escuchar conexiones entrantes a un puerto, actuando como un servidor a la espera de que un cliente se conecte]
 
-nc -zv ip (puerto) [verifica si un puerto está abierto en un host]
-
 nc ip (puerto) {contraseña} [conectar servidor a un puerto en específico]
-
-nc localhost (puerto) {contraseña} [conectar el servidor en el que estás a un puerto en específico]
 
 ss -tnl [esto muestra la informacion de las conexiones activas en el servidor]
 
-ncat --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
-
-ncat servidor (puerto) [sirve para crear conexiones de forma mucho más segura]
+nc --ssl (servidor) (puerto) [sirve para crear una conexión más segura y con cifrado]
 
 python3 -m http.server (puerto) [levanta un servidor web simple en un puerto para compartir archivos de forma rápida desde el directorio donde lo ejecutás]
 
@@ -146,6 +140,8 @@ wget http://ip:puerto/archivo [usando wget podes traer de una maquina, un archiv
 wget -r SERVICIO://ip/archivo [usando wget con el parametro -r, se puede traer archivos de un servicio especifico de la maquina, por ejemplo ftp]
 
 ssh usuario@servidor -p puerto [iniciar sesión]
+
+ssh usuario@servidor -p puerto –t "bash --noprofile" [inicia sesión con una shell limpia y sin configuraciones personalizadas]
 
 sftp usuario@servidor [SFTP es un subsistema dentro del servicio SSH, cuando configuras SSH en un servidor, generalmente por defecto permite la transferencia segura de archivos]
 
@@ -159,19 +155,11 @@ ssh usuario@servidor -p puerto “comando” [inicia sesión y ejecuta un comand
 
 ssh-keygen [para generar una clave]
 
-ssh-keygen -lf [sirve para mostrar la huella digital de una clave SSH pública]
-
 ssh-keygen -t ed25519 -C "tu_email@example.com" [para generar una clave ssh con un mail]
 
 cat ~/.ssh/clave.pub [para leer la clave ssh]
 
 ssh -T git@github.com [probar conexion en git con ssh para autenticar]
-
-systemctl enable ssh [iniciar ssh]
-
-openssl s_client -connect gugul.com:puerto [para trabajar con protocolos de seguridad, certificados, y cifrado, también puede realizar pruebas de SSL/TLS]
-
-openssl s_client -connect localhost:puerto [para conectarse estando dentro del servidor en un puerto específico]
 
 ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuarios subir y descargar archivos de manera remota entre computadoras a través de una red]
 

@@ -1,0 +1,21 @@
+Estando en la /home/usuario1 ejecutamos lo siguiente:
+
+
+
+ssh-keygen
+
+cd .ssh
+
+chmod 777 id_rsa.pub
+
+cp id_rsa.pub /home/usuario1
+
+cd ..
+
+sudo -u usuario2 /bin/cp ./id_rsa.pub /home/usuario2/.ssh/authorized_keys
+
+ssh usuario2@127.0.0.1 -i /.ssh/id_rsa
+
+
+
+Con esto conseguimos crear un acceso sin contraseña al usuario2

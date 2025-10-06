@@ -1,0 +1,15 @@
+    //al final de la cookie coloca una posicion para el fuzzing, el ultimo caracter de la cookie puede ser de la A-Z
+   if(isset($_COOKIE['admin']) && $_COOKIE['admin'] == '&G6u@B6uDXMq&Ms'){
+
+
+enviar un nuevo parámetro POST “secure” con el valor “val1d”
+       
+       //[+] Add if $_POST['secure'] == 'val1d'
+        $valid_ext = array("pdf","php","txt");
+   }
+   else{
+
+        $valid_ext = array("txt");
+   }
+
+   // Para que sea correcto el POST deberia devolver 1 de lo contrario devuelve 0      
