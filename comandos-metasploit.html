@@ -43,6 +43,8 @@ wpscan --url (ip) -e u --ignore-main-redirect --force [obtiene usuarios de WordP
 
 gobuster dir -u http://IP/ -w (RutaDeWordlist) -x html,php,txt,zip -t 100 -k -r [Fuerza rutas ocultas en un sitio web usando una wordlist, probando extensiones .html, .php, .txt y .zip con 100 hilos, ignorando certificados y sin seguir redirecciones.]
 
+gobuster vhost -u http://IP/ -w (RutaDelWorlist) --append-domain [fuerza rutas ocultas en modo vhost para probar subdominios]
+
 ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,.php [Fuerza rutas ocultas usando -w para wordlists, -u para la direccion ip, -c para dar claridad, -ic para ignorar respuestas iguales, -fc para ignorar codigos de estado y -e para encontrar extensiones]
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
