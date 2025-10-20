@@ -208,6 +208,8 @@ printenv (variable) [sirve para mostrar variables de entorno del sistema]
 
 uname -r [muestra la versión del kernel de Linux que está corriendo en el sistema]
 
+openssl passwd -1 -salt abc (contraseña) [genera el hash de la palabra contraseña usando el esquema MD5-crypt (-1) y la salt fija abc; devuelve una cadena como $1$abc$..]
+
 chmod 400 [solo el propietario puede leer el archivo]
 
 chmod 600 [solo el propietario puede leer y escribir el archivo]
@@ -262,6 +264,8 @@ exploit/multi/handler [Generic Payload Handler] {
 scanner/http/tomcat_mgr_login [Tomcat Application Manager Login Utility]
 
 exploit/multi/http/builderengine_upload_exec [BuilderEngine 3.5.0 Arbitrary File Upload Vulnerability and execution]
+
+metasploit: exploit/unix/webapp/drupal_drupalgeddon2 []
 
 
 10. otros:
