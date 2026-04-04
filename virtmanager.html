@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Como instalar QEMU y VirtManager en Debian</title>
+  <link rel="icon" href="/images/terminal.png" type="image/png">
+    <link rel="stylesheet" href="css/sanatorio.css">
+</head>
+<body>
+    <header>
+        <h1>Como instalar QEMU y VirtManager en Debian</h1>
+    </header>
+  
+    <h3>1 - Instalar los siguientes paquetes</h3>
+  <p>
+  sudo apt install qemu-kvm qemu-system qemu-utils python3 python3-pip libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager -y
+</p>
+
+<h3>
+  2- Verificar el servicio Libvirtd
+</h3>
+
+<p>
+sudo systemctl status libvirtd.service
+</p>
+
+<h3>
+    3 - Iniciar la red predeterminada para la conexión en red de las maquinas 
+</h3>
+
+<p>sudo virsh net-start default</p>
+<p>sudo virsh net-autostart default</p>
+<p>sudo virsh net-list --all</p>
+
+<h3>4 - Agregar el usuario a libvirt para permitir el acceso a las máquinas virtuales</h3>
+
+<p>sudo usermod -aG libvirt $USER</p>
+<p>sudo usermod -aG libvirt-qemu $USER</p>
+<p>sudo usermod -aG kvm $USER</p>
+<p>sudo usermod -aG input $USER</p>
+<p>sudo usermod -aG disk $USER</p>
+
+<h3>
+Extra - Hacer una conexion puente
+</h3>
+
+<p>nmtui</p>
+<p>Modificar una conexion</p>
+<p>Añadir</p>
+<p>Puente</p>
+<p>Ir a PUENTE ports</p>
+<p>agregar Conexion Ethernet</p>
+<p>Desactivar conexion automatica</p>
+
+<h3>Extra 2 - Convertir ova vmdk raw vdi a qcow2</h3>
+
+<p>qemu-img convert -f archivo -O qcow2 maquina.archivo maquina.qcow2</p>
+<p>Si no se sabe el SO, al crear la maquina usar SO generico</p>
+</body>
