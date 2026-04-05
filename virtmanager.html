@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Como instalar QEMU y VirtManager en Debian</title>
+  <title>QEMU y VirtManager</title>
   <link rel="icon" href="/images/terminal.png" type="image/png">
     <link rel="stylesheet" href="css/sanatorio.css">
 </head>
@@ -41,21 +41,17 @@ sudo systemctl status libvirtd.service
 <p>sudo usermod -aG input $USER</p>
 <p>sudo usermod -aG disk $USER</p>
 
-<h3>
-Extra - Hacer una conexion puente
-</h3>
+<h1>Configuraciones extra</h1>
 
-<p>nmtui</p>
-<p>Modificar una conexion</p>
-<p>Añadir</p>
-<p>Puente</p>
-<p>Ir a PUENTE ports</p>
-<p>agregar Conexion Ethernet</p>
-<p>Desactivar conexion automatica</p>
-
-<h3>Extra 2 - Convertir ova vmdk raw vdi a qcow2</h3>
+<h3>Convertir ova vmdk raw vdi a qcow2</h3>
 
 <p>qemu-img convert -f archivo -O qcow2 maquina.archivo maquina.qcow2</p>
 <p>Los archivos ova requieren una extraccion con 7z para obtener el vmdk, y ahi usar qemu-img</p>
 <p>Si no se sabe el SO, al crear la maquina usar SO generico</p>
+
+<h3>Crear una conexion puente</h3>
+
+<p>nmtui -> Modificar una conexion -> Añadir -> Puente -> Ir a PUENTE ports -> agregar Conexion Ethernet </p>
+
+
 </body>
