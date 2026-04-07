@@ -44,7 +44,7 @@ lxc image import ./alpine-v3.10-x86_64-20191008_1227.tar.gz --alias myimage
 lxc image list
 lxc init myimage ignite -c security.privileged=true
 lxc config device add ignite mydevice disk source=/ path=/mnt/root recursive=true
-lxc start ignitec
+lxc start ignite
 lxc exec ignite /bin/sh
 id
 
