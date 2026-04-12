@@ -107,6 +107,10 @@ hashcat --force (contraseña) -r /usr/share/hashcat/rules/best64.rule --stdout >
 
 hydra -L (usuario) -P (RutaDeWordlist) ssh://IP [realiza un ataque de fuerza bruta al servicio SSH usando un usuario y una wordlist para intentar encontrar la contraseña]
 
+gpg --import llave.asc [importar clave criptografica localmente]
+
+gpg --decrypt archivo.pgp [sirve para descifrar un archivo cifrado de tipo pgp]
+
 base64 [codificar base64]
 
 echo “palabra” | base64 [codificar base64]
