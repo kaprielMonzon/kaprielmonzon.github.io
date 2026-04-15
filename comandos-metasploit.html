@@ -21,6 +21,8 @@ ping página o ip [se usa para verificar la conectividad de red entre tu máquin
 
 dig (dominio.com) @(ip) [hace una consulta DNS al servidor de nombres especificado por ip, preguntando por los registros del dominio]
 
+dig -x (ip) [Realiza una búsqueda inversa de DNS para obtener el nombre de dominio asociado a la IP]
+
 
 2. escaneo y enumeracion:
 
@@ -29,7 +31,7 @@ sudo nmap -p- -sC -sV -T4 -Pn -sT -n -O -v (ip) -oN (infoDeNmap) [El comando rea
 
 whatweb (ip) [sirve para identificar tecnologías y servicios usados por un sitio web]
 
-enum4linux (IP) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
+enum4linux (ip) [enumera usuarios, grupos, recursos compartidos SMB, políticas y más en sistemas Windows/Samba]
 
 wpscan --url (ip) [es para identificar plugin o cosas vulnerables en un sitio WordPress]
 
