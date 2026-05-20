@@ -38,14 +38,12 @@ sudo systemctl status libvirtd.service
 <p>sudo usermod -aG libvirt $USER</p>
 <p>sudo usermod -aG libvirt-qemu $USER</p>
 <p>sudo usermod -aG kvm $USER</p>
-<p>sudo usermod -aG input $USER</p>
-<p>sudo usermod -aG disk $USER</p>
 
 <h1>Configuraciones extra</h1>
 
 <h3>Convertir ova vmdk raw vdi a qcow2</h3>
 
-<p>qemu-img convert -f archivo -O qcow2 maquina.archivo maquina.qcow2</p>
+<p>qemu-img convert -f (formato) -O qcow2 maquina.archivo maquina.qcow2</p>
 <p>Los archivos ova requieren una extraccion con 7z para obtener el vmdk, y ahi usar qemu-img</p>
 <p>Si no se sabe el SO, al crear la maquina usar SO generico</p>
 
