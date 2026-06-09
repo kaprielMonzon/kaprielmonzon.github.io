@@ -53,7 +53,7 @@ ffuf -w (RutaDeWordlist) -u http://IP/ruta/FUZZ -c -ic -fc 403,404 -e .txt,.zip,
 
 ffuf -u http://IP/archivo.php?FUZZ=parametro -w (RutaDelWorlist) | grep "Status: 200" [Fuerza un parametro oculto que esta en FUFF a traves de una ruta oculta y lo revela con grep]
 
-ffuf -u https://IP/ -w (RutaDelWorlist) -H 'Host: FUZZ.nombredelhost' -fs 4605 [Prueba muchos posibles subdominios]
+ffuf -u https://IP/ -w (RutaDelWorlist) -H 'Host: FUZZ.nombredelhost' -fw 1 [Prueba muchos posibles subdominios]
 
 dirb (ip o url) (RutaDeWordlist) [fuerza rutas ocultas en un sitio web usando una wordlist]
 

