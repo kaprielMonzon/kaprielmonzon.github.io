@@ -327,6 +327,8 @@ getent services [información de servicios de red y sus puertos]
 
 cat ./directorio [para buscar los archivos de texto]
 
+sed -n '(numero)p' archivo.txt [busca leer la linea de un numero en un archivo.txt]
+
 nl (archivo) [lee todo el archivo y enumera las lineas]
 
 cd .. [te devuelve para atrás]
@@ -348,6 +350,10 @@ find / [para encontrar todo]
 find -group [para encontrar archivos de la propiedad de un grupo]
 
 find -name "archivo" 2>/dev/null [/ indica que busque en la raíz del sistema. -name “archivo” indica busca archivos o carpetas que literal se llamen “archivo”. 2>/dev/null oculta los problemas]
+
+find carpeta -type f -exec cat {} \; [busca recursivamente en la carpeta y lee todos los archivos y filtra su contenido]
+
+find / -type f -size (tamaño)c 2</dev/null [busca en la raiz un archivo con un tamaño especifico (c=bytes k=kilobytes M=megabytes G=gigabytes)]
 
 find -user [para encontrar archivos de la propiedad de un usuario]
 
@@ -386,6 +392,10 @@ vim (:q [para salir, :q! para forzarlo y para guardar w:)]
 bzip2 archivo.txt [comprime genera archivo.txt.bz2]
 
 bunzip2 archivo.txt.bz2 [descomprime recupera archivo.txt]
+
+unzip archivo.zip [descomprime archivo zip]
+
+unzip archivo.zip -d directorio [descomprime archivo -d le dice que lo haga en un directorio en especifico]
 
 gzip archivo.txt [comprime archivo.txt genera archivo.txt.gz]
 

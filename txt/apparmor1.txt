@@ -1,0 +1,25 @@
+#include <tunables/global>
+
+/usr/sbin/ash flags=(complain) {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+  #include <abstractions/user-tmp>
+
+  # Remove specific file path rules
+  # Deny access to certain directories
+  deny /opt/ r,
+  deny /opt/** w,
+  deny /tmp/** w,
+  deny /dev/shm w,
+  deny /var/tmp w,
+  deny /home/** w,
+  /usr/bin/** mrix,
+  /usr/sbin/** mrix,
+
+  # Simplified rule for accessing /home directory
+  owner /home/** ri
+
+
+

