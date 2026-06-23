@@ -327,6 +327,8 @@ getent services [información de servicios de red y sus puertos]
 
 cat ./directorio [para buscar los archivos de texto]
 
+cat passy | grep ^cadena [lee un archivo y filtra con ^cadena las escrituras solo las que arrancan con cadena no las que la contengan]
+
 sed -n '(numero)p' archivo.txt [busca leer la linea de un numero en un archivo.txt]
 
 nl (archivo) [lee todo el archivo y enumera las lineas]
@@ -354,6 +356,12 @@ find -name "archivo" 2>/dev/null [/ indica que busque en la raíz del sistema. -
 find carpeta -type f -exec cat {} \; [busca recursivamente en la carpeta y lee todos los archivos y filtra su contenido]
 
 find / -type f -size (tamaño)c 2</dev/null [busca en la raiz un archivo con un tamaño especifico (c=bytes k=kilobytes M=megabytes G=gigabytes)]
+
+find / -type f -printf "%p %TY-%Tm-%Td\n" 2>/dev/null | grep "año-mes-dia" [busca archivos por una fecha especifica %p imprime la ruta completa %TY imprime el año de la ultima modificacion %Tm imprime el mes con 2 digitos %Td imprime el dia con 2 digitos \n hace un salto de linea]
+
+find / -type f ! -newermt "año-mes-dia" -printf "%p %TY-%Tm-%Td\n" 2>/dev/null [filtra los que son anteriores a la fecha]
+
+find / -type f -newermt "año-mes-dia" -printf "%p %TY-%Tm-%Td\n" 2>/dev/null [filtra los que son posteriores a la fecha]
 
 find -user [para encontrar archivos de la propiedad de un usuario]
 
