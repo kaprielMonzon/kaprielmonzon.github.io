@@ -1,0 +1,1 @@
+Update: In case you’re getting any errors to do with requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ‘:HIGH:!DH:!aNULL’; this can be fixed by installing or upgrading urllib3 if the error persists even after upgrading urllib3 please check out the updated script linked below.
