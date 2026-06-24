@@ -253,6 +253,8 @@ uname -r [muestra la versión del kernel de Linux que está corriendo en el sist
 
 openssl passwd -1 -salt abc (contraseña) [genera el hash de la palabra contraseña usando el esquema MD5-crypt (-1) y la salt fija abc; devuelve una cadena como $1$abc$..]
 
+openssl s_client -connect IP:PUERTO -key (llave) -cert (certificado) -brief [Este comando intenta conectarte a un servidor usando un candado digital]
+
 chmod 400 [solo el propietario puede leer el archivo]
 
 chmod 600 [solo el propietario puede leer y escribir el archivo]
