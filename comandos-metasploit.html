@@ -316,6 +316,13 @@ exploit/unix/webapp/drupal_drupalgeddon2 [Drupal Drupalgeddon 2 Forms API Proper
 10. otros:
 
 
+python3 -m venv LAB [crear un entorno llamado "LAB" en el directorio actual]
+
+source LAB/bin/activate [Activa el entorno virtual "LAB"]
+
+pip install --upgrade pip [Actualizar pip]
+
+git-dumper http://IP/.git loot [intenta descargar y reconstruir por completo un repositorio Git expuesto en un servidor web]
 
 getent passw [información de usuarios]
 
